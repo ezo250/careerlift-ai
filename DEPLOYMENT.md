@@ -49,9 +49,8 @@
 
 3. **Add Environment Variable:**
    ```
-   VITE_API_URL=https://careerlift-api.onrender.com/api
+   VITE_API_URL=https://careerlift-ai.onrender.com/api
    ```
-   (Replace with your actual Render backend URL)
 
 4. **Deploy**: Click "Deploy"
 
