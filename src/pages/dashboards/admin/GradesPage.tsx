@@ -13,8 +13,10 @@ export default function GradesPage() {
   const [sections, setSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState<any>(null);
-  const [filterSection, setFilterSection] = useState('');
-  const [filterJob, setFilterJob] = useState('');
+  // use special token for "all" to avoid empty-string SelectItem values
+  const ALL_TOKEN = '__all__';
+  const [filterSection, setFilterSection] = useState(ALL_TOKEN);
+  const [filterJob, setFilterJob] = useState(ALL_TOKEN);
 
   useEffect(() => {
     loadData();
@@ -50,11 +52,11 @@ export default function GradesPage() {
   }
 
   const filteredSubmissions = submissions.filter(sub => {
-    if (filterSection) {
+    if (filterSection && filterSection !== ALL_TOKEN) {
       const job = jobs.find(j => j._id === (sub.jobId?._id || sub.jobId));
       if (!job || (job.sectionId?._id || job.sectionId) !== filterSection) return false;
     }
-    if (filterJob && (sub.jobId?._id || sub.jobId) !== filterJob) return false;
+    if (filterJob && filterJob !== ALL_TOKEN && (sub.jobId?._id || sub.jobId) !== filterJob) return false;
     return true;
   });
 
@@ -109,7 +111,7 @@ export default function GradesPage() {
               <SelectValue placeholder="All Sections" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="" className="cursor-pointer hover:bg-primary/10">All Sections</SelectItem>
+              <SelectItem value={ALL_TOKEN} className="cursor-pointer hover:bg-primary/10">All Sections</SelectItem>
               {sections.map(s => (
                 <SelectItem key={s._id} value={s._id} className="cursor-pointer hover:bg-primary/10">
                   {s.name}
@@ -122,7 +124,7 @@ export default function GradesPage() {
               <SelectValue placeholder="All Jobs" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="" className="cursor-pointer hover:bg-primary/10">All Jobs</SelectItem>
+              <SelectItem value={ALL_TOKEN} className="cursor-pointer hover:bg-primary/10">All Jobs</SelectItem>
               {jobs.map(j => (
                 <SelectItem key={j._id} value={j._id} className="cursor-pointer hover:bg-primary/10">
                   {j.title} - {j.company}
@@ -130,13 +132,13 @@ export default function GradesPage() {
               ))}
             </SelectContent>
           </Select>
-          {(filterSection || filterJob) && (
+          {(filterSection !== ALL_TOKEN || filterJob !== ALL_TOKEN) && (
             <Button
               size="sm"
               variant="ghost"
               onClick={() => {
-                setFilterSection('');
-                setFilterJob('');
+                setFilterSection(ALL_TOKEN);
+                setFilterJob(ALL_TOKEN);
               }}
             >
               Clear Filters
