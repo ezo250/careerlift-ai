@@ -1,6 +1,8 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 class ApiClient {
+  private token: string | null;
+
   constructor() {
     this.token = localStorage.getItem('kepler_token');
   }
