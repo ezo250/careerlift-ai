@@ -6,7 +6,6 @@ import {
   LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import keplerLogo from '@/assets/kepler-logo.png';
 
 interface NavItem {
   label: string;
@@ -47,7 +46,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const navItems = user.role === 'superadmin' ? adminNav : user.role === 'teacher' ? teacherNav : studentNav;
   const roleLabel = user.role === 'superadmin' ? 'Super Admin' : user.role === 'teacher' ? 'Teacher' : 'Student';
-  const roleColor = user.role === 'superadmin' ? 'bg-kepler-gold' : user.role === 'teacher' ? 'bg-kepler-green' : 'bg-primary';
+  const roleColor = user.role === 'superadmin' ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : user.role === 'teacher' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-blue-500 to-indigo-500';
 
   const handleLogout = () => {
     logout();
@@ -55,13 +54,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
-        <img src={keplerLogo} alt="Kepler" className="h-9 brightness-0 invert" />
+      <div className="flex items-center gap-3 px-5 py-6 border-b border-slate-200 dark:border-slate-800">
+        <img src="/kepler-logo.png" alt="Kepler" className="h-10 drop-shadow-md" />
         <div>
-          <div className="font-display font-bold text-sidebar-foreground text-sm">CareerLift</div>
-          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${roleColor} text-primary-foreground mt-0.5`}>
+          <div className="font-display font-bold text-foreground text-base">CareerLift</div>
+          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${roleColor} text-white mt-0.5 shadow-sm`}>
             {roleLabel}
           </div>
         </div>
@@ -76,30 +75,36 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               key={item.path}
               to={item.path}
               onClick={() => setSidebarOpen(false)}
-              className={active ? 'sidebar-item-active' : 'sidebar-item-inactive'}
+              className={`
+                flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
+                ${active 
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800'
+                }
+              `}
             >
-              <item.icon className="w-5 h-5" />
-              <span>{item.label}</span>
-              {active && <ChevronRight className="w-4 h-4 ml-auto" />}
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              <span className="flex-1">{item.label}</span>
+              {active && <ChevronRight className="w-4 h-4" />}
             </Link>
           );
         })}
       </nav>
 
       {/* User */}
-      <div className="px-3 py-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 px-3 py-2 mb-2">
-          <div className="w-9 h-9 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-foreground font-semibold text-sm">
+      <div className="px-3 py-4 border-t border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-xl bg-slate-100 dark:bg-slate-800">
+          <div className={`w-10 h-10 rounded-full ${roleColor} flex items-center justify-center text-white font-bold text-sm shadow-md`}>
             {user.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-foreground truncate">{user.name}</p>
-            <p className="text-xs text-sidebar-foreground/50 truncate">{user.email}</p>
+            <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="sidebar-item-inactive w-full text-sidebar-foreground/60 hover:text-red-400"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 font-medium"
         >
           <LogOut className="w-5 h-5" />
           <span>Sign Out</span>
@@ -109,9 +114,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-64 bg-sidebar fixed inset-y-0 left-0 z-30">
+      <aside className="hidden lg:block w-72 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl fixed inset-y-0 left-0 z-30 border-r border-slate-200 dark:border-slate-800 shadow-xl">
         <SidebarContent />
       </aside>
 
@@ -123,15 +128,15 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-foreground/80 z-40 lg:hidden"
+              className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-40 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
-              initial={{ x: -280 }}
+              initial={{ x: -288 }}
               animate={{ x: 0 }}
-              exit={{ x: -280 }}
+              exit={{ x: -288 }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-              className="fixed inset-y-0 left-0 w-64 bg-sidebar z-50 lg:hidden"
+              className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-slate-900 z-50 lg:hidden shadow-2xl"
             >
               <SidebarContent />
             </motion.aside>
@@ -140,17 +145,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </AnimatePresence>
 
       {/* Main */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-72">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border h-16 flex items-center px-4 lg:px-8">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden mr-4 text-muted-foreground hover:text-foreground">
+        <header className="sticky top-0 z-20 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 h-16 flex items-center px-4 lg:px-8 shadow-sm">
+          <button 
+            onClick={() => setSidebarOpen(true)} 
+            className="lg:hidden mr-4 p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+          >
             <Menu className="w-6 h-6" />
           </button>
           <div className="flex-1" />
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+            <button className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-kepler-green rounded-full" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-lg shadow-emerald-500/50" />
             </button>
           </div>
         </header>
