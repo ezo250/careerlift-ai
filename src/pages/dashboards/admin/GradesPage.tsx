@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, Download, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import SubmissionDetail from '@/components/SubmissionDetail';
@@ -103,26 +104,32 @@ export default function GradesPage() {
       <div className="glass-card-elevated p-4">
         <div className="flex items-center gap-3 flex-wrap">
           <Filter className="w-5 h-5 text-muted-foreground" />
-          <select
-            value={filterSection}
-            onChange={e => setFilterSection(e.target.value)}
-            className="kepler-input max-w-xs"
-          >
-            <option value="">All Sections</option>
-            {sections.map(s => (
-              <option key={s._id} value={s._id}>{s.name}</option>
-            ))}
-          </select>
-          <select
-            value={filterJob}
-            onChange={e => setFilterJob(e.target.value)}
-            className="kepler-input max-w-xs"
-          >
-            <option value="">All Jobs</option>
-            {jobs.map(j => (
-              <option key={j._id} value={j._id}>{j.title} - {j.company}</option>
-            ))}
-          </select>
+          <Select value={filterSection} onValueChange={setFilterSection}>
+            <SelectTrigger className="w-64 h-10 rounded-xl">
+              <SelectValue placeholder="All Sections" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="" className="cursor-pointer hover:bg-primary/10">All Sections</SelectItem>
+              {sections.map(s => (
+                <SelectItem key={s._id} value={s._id} className="cursor-pointer hover:bg-primary/10">
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterJob} onValueChange={setFilterJob}>
+            <SelectTrigger className="w-64 h-10 rounded-xl">
+              <SelectValue placeholder="All Jobs" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              <SelectItem value="" className="cursor-pointer hover:bg-primary/10">All Jobs</SelectItem>
+              {jobs.map(j => (
+                <SelectItem key={j._id} value={j._id} className="cursor-pointer hover:bg-primary/10">
+                  {j.title} - {j.company}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {(filterSection || filterJob) && (
             <Button
               size="sm"
