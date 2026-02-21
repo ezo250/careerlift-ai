@@ -121,7 +121,7 @@ export default function Landing() {
             <img src={keplerLogo} alt="Kepler" className="h-8 w-auto" />
             <span className="font-display font-bold text-foreground">CareerLift</span>
           </div>
-          <p className="text-sm text-muted-foreground">© 2025 Kepler College. All rights reserved.</p>
+          <p className="text-sm text-muted-foreground">© 2026 Kepler College. All rights reserved. | Developed by Amani Alain</p>
         </div>
       </footer>
     </div>
