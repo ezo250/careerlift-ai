@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ElementType } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { ArrowRight, Users, Brain, FileText, BarChart3, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import keplerLogo from '@/assets/kepler-logo.png';
 import { api } from '@/lib/api';
 
-const features = [
+type Feature = { icon: ElementType; title: string; description: string };
+
+const features: Feature[] = [
   { icon: Brain, title: 'Grading', description: 'Instant, detailed feedback on resumes and cover letters using advanced AI analysis.' },
   { icon: FileText, title: 'Smart Checklists', description: 'Customizable grading criteria aligned with specific job descriptions.' },
   { icon: Users, title: 'Section Management', description: 'Organize students into cohorts and assign career staff effortlessly.' },
@@ -15,9 +17,9 @@ const features = [
   { icon: Sparkles, title: 'Multiple Submissions', description: 'Allow students to iterate and improve with configurable submission limits.' },
 ];
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' as const } }),
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' } }),
 };
 
 export default function Landing() {
@@ -42,10 +44,6 @@ export default function Landing() {
         // Keep default values on error
       });
   }, []);
-
-  const placementRate = stats.totalSubmissions > 0 
-    ? Math.round((stats.averageScore / 100) * 100) 
-    : 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -155,20 +153,23 @@ export default function Landing() {
             viewport={{ once: true, margin: "-50px" }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {features.map((f, i) => (
-              <motion.div
-                key={i}
-                variants={fadeUp}
-                custom={i + 2}
-                className="glass-card-elevated p-6 group hover:scale-[1.02] transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <f.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">{f.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
-              </motion.div>
-            ))}
+            {features.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <motion.div
+                  key={i}
+                  variants={fadeUp}
+                  custom={i + 2}
+                  className="glass-card-elevated p-6 group hover:scale-[1.02] transition-all duration-300"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="font-display text-lg font-semibold text-foreground mb-2">{f.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
