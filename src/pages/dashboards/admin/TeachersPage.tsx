@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UserPlus, Mail, Send, Copy, CheckCircle, XCircle } from 'lucide-react';
+import { UserPlus, Mail, Send, Copy, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
@@ -72,6 +82,33 @@ export default function TeachersPage() {
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     toast.success('Code copied to clipboard');
+  };
+
+  // Modal state for delete confirmation
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmTarget, setConfirmTarget] = useState<{ type: 'teacher' | 'invite'; id: string; label: string } | null>(null);
+
+  const openDeleteConfirm = (type: 'teacher' | 'invite', id: string, label: string) => {
+    setConfirmTarget({ type, id, label });
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!confirmTarget) return;
+    try {
+      if (confirmTarget.type === 'teacher') {
+        await api.request(`/users/${confirmTarget.id}`, { method: 'DELETE' });
+        toast.success('Teacher deleted');
+      } else {
+        await api.request(`/invites/${confirmTarget.id}`, { method: 'DELETE' });
+        toast.success('Invite deleted');
+      }
+      setConfirmOpen(false);
+      setConfirmTarget(null);
+      loadData();
+    } catch (err: any) {
+      toast.error(err.message || 'Delete failed');
+    }
   };
 
   if (loading) {
@@ -233,20 +270,9 @@ export default function TeachersPage() {
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={async () => {
-                    if (!window.confirm('Delete this teacher? This action cannot be undone.')) return;
-                    try {
-                      await api.request(`/users/${teacher._id}`, {
-                        method: 'DELETE'
-                      });
-                      toast.success('Teacher deleted');
-                      loadData();
-                    } catch (err: any) {
-                      toast.error(err.message || 'Delete failed');
-                    }
-                  }}
+                  onClick={() => openDeleteConfirm('teacher', teacher._id, teacher.name)}
                 >
-                  Delete
+                  <Trash2 className="w-3 h-3 mr-1" /> Delete
                 </Button>
               </div>
             </div>
@@ -313,21 +339,30 @@ export default function TeachersPage() {
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={async () => {
-                    if (!window.confirm('Delete this invite?')) return;
-                    try {
-                      await api.request(`/invites/${invite._id}`, { method: 'DELETE' });
-                      toast.success('Invite deleted');
-                      loadData();
-                    } catch (err: any) {
-                      toast.error(err.message || 'Delete failed');
-                    }
-                  }}
+                  onClick={() => openDeleteConfirm('invite', invite._id, invite.email)}
                 >
-                  Delete
+                  <Trash2 className="w-3 h-3 mr-1" /> Delete
                 </Button>
               </div>
             </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm delete</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete {confirmTarget?.label}? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setConfirmOpen(false)}>Cancel</Button>
+              <Button className="bg-destructive text-destructive-foreground" onClick={handleConfirmDelete}>Delete</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
           ))}
           {invites.length === 0 && (
             <p className="text-center text-muted-foreground py-8">No invites sent yet</p>
