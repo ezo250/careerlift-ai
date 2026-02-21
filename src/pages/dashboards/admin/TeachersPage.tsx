@@ -345,6 +345,12 @@ export default function TeachersPage() {
                 </Button>
               </div>
             </div>
+          ))}
+          {invites.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">No invites sent yet</p>
+          )}
+        </div>
+      </div>
 
       {/* Confirmation Dialog */}
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
@@ -363,12 +369,6 @@ export default function TeachersPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-          ))}
-          {invites.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">No invites sent yet</p>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, UserPlus, Sparkles, GraduationCap, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import keplerLogo from '@/assets/Kepler_Logo.svg';
+import keplerLogo from '@/assets/Kepler_Logo.png';
 
 export default function Signup() {
   const [isTeacher, setIsTeacher] = useState(false);
@@ -249,17 +250,18 @@ export default function Signup() {
               {!isTeacher && (
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">Select Your Section</label>
-                  <select
-                    value={sectionId}
-                    onChange={e => setSectionId(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
-                    required
-                  >
-                    <option value="">Choose a section...</option>
-                    {sections.map(s => (
-                      <option key={s._id} value={s._id}>{s.name} — {s.description}</option>
-                    ))}
-                  </select>
+                  <Select value={sectionId} onValueChange={setSectionId} required>
+                    <SelectTrigger className="w-full h-12 px-4 rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-foreground focus:ring-2 focus:ring-primary">
+                      <SelectValue placeholder="Choose a section..." />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
+                      {sections.map(s => (
+                        <SelectItem key={s._id} value={s._id} className="cursor-pointer hover:bg-primary/10">
+                          {s.name} — {s.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Users, UserPlus, Trash2, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -179,24 +180,27 @@ export default function SectionsPage() {
                   <label className="block text-xs font-medium text-muted-foreground mb-2">
                     Assign Teacher
                   </label>
-                  <select
-                    onChange={e => {
-                      if (e.target.value) {
-                        handleAssignTeacher(section._id, e.target.value);
-                        e.target.value = '';
+                  <Select
+                    value=""
+                    onValueChange={(value) => {
+                      if (value) {
+                        handleAssignTeacher(section._id, value);
                       }
                     }}
-                    className="kepler-input text-sm"
                   >
-                    <option value="">Select a teacher...</option>
-                    {teachers
-                      .filter(t => !assignedTeachers.some(at => at._id === t._id))
-                      .map(teacher => (
-                        <option key={teacher._id} value={teacher._id}>
-                          {teacher.name} ({teacher.email})
-                        </option>
-                      ))}
-                  </select>
+                    <SelectTrigger className="h-9 text-sm rounded-lg">
+                      <SelectValue placeholder="Select a teacher..." />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg">
+                      {teachers
+                        .filter(t => !assignedTeachers.some(at => at._id === t._id))
+                        .map(teacher => (
+                          <SelectItem key={teacher._id} value={teacher._id} className="cursor-pointer hover:bg-primary/10">
+                            {teacher.name} ({teacher.email})
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </motion.div>

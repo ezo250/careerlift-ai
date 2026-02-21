@@ -9,6 +9,12 @@ import TeachersPage from '@/pages/dashboards/admin/TeachersPage';
 import JobsPage from '@/pages/dashboards/admin/JobsPage';
 import GradesPage from '@/pages/dashboards/admin/GradesPage';
 import ChecklistsPage from '@/pages/dashboards/admin/ChecklistsPage';
+import TeacherStudentsPage from '@/pages/dashboards/teacher/StudentsPage';
+import TeacherSubmissionsPage from '@/pages/dashboards/teacher/SubmissionsPage';
+import TeacherAnalyticsPage from '@/pages/dashboards/teacher/AnalyticsPage';
+import StudentJobsPage from '@/pages/dashboards/student/JobsPage';
+import StudentSubmissionsPage from '@/pages/dashboards/student/SubmissionsPage';
+import StudentGradesPage from '@/pages/dashboards/student/GradesPage';
 
 export default function DashboardRouter() {
   const { user } = useAuth();
@@ -30,17 +36,17 @@ export default function DashboardRouter() {
         {user.role === 'teacher' && (
           <>
             <Route index element={<TeacherDashboard />} />
-            <Route path="students" element={<TeacherDashboard />} />
-            <Route path="submissions" element={<TeacherDashboard />} />
-            <Route path="analytics" element={<TeacherDashboard />} />
+            <Route path="students" element={<TeacherStudentsPage />} />
+            <Route path="submissions" element={<TeacherSubmissionsPage />} />
+            <Route path="analytics" element={<TeacherAnalyticsPage />} />
           </>
         )}
         {user.role === 'student' && (
           <>
             <Route index element={<StudentDashboard />} />
-            <Route path="jobs" element={<StudentDashboard />} />
-            <Route path="submissions" element={<StudentDashboard />} />
-            <Route path="grades" element={<StudentDashboard />} />
+            <Route path="jobs" element={<StudentJobsPage />} />
+            <Route path="submissions" element={<StudentSubmissionsPage />} />
+            <Route path="grades" element={<StudentGradesPage />} />
           </>
         )}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

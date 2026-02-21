@@ -6,7 +6,7 @@ import {
   LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import keplerLogo from '@/assets/Kepler_Logo.svg';
+import keplerLogo from '@/assets/Kepler_Logo.png';
 
 interface NavItem {
   label: string;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Briefcase, Calendar, Users, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -140,31 +141,41 @@ export default function JobsPage() {
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Section</label>
-                <select
+                <Select
                   value={formData.sectionId}
-                  onChange={e => setFormData({ ...formData, sectionId: e.target.value })}
-                  className="kepler-input"
+                  onValueChange={(value) => setFormData({ ...formData, sectionId: value })}
                   required
                 >
-                  <option value="">Select section...</option>
-                  {sections.map(s => (
-                    <option key={s._id} value={s._id}>{s.name}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-11 rounded-xl">
+                    <SelectValue placeholder="Select section..." />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {sections.map(s => (
+                      <SelectItem key={s._id} value={s._id} className="cursor-pointer hover:bg-primary/10">
+                        {s.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Checklist</label>
-                <select
+                <Select
                   value={formData.checklistId}
-                  onChange={e => setFormData({ ...formData, checklistId: e.target.value })}
-                  className="kepler-input"
+                  onValueChange={(value) => setFormData({ ...formData, checklistId: value })}
                   required
                 >
-                  <option value="">Select checklist...</option>
-                  {checklists.map(c => (
-                    <option key={c._id} value={c._id}>{c.name}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-11 rounded-xl">
+                    <SelectValue placeholder="Select checklist..." />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {checklists.map(c => (
+                      <SelectItem key={c._id} value={c._id} className="cursor-pointer hover:bg-primary/10">
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Max Submissions</label>
