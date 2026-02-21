@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'crypto';
 import { TeacherInvite } from '../models/index.js';
 import { auth, authorize } from '../middleware/auth.js';
+import { sendTeacherInvite } from '../utils/email.js';
 
 const router = express.Router();
 
@@ -19,20 +20,30 @@ router.get('/', auth, authorize('superadmin'), async (req, res) => {
 router.post('/', auth, authorize('superadmin'), async (req, res) => {
   try {
     const { emails } = req.body;
-    const invites = [];
-
-    for (const email of emails) {
-      const code = `KCL-TEACH-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-      const invite = new TeacherInvite({
-        email: email.toLowerCase(),
-        code,
-        status: 'pending'
-      });
-      await invite.save();
-      invites.push(invite);
+    if (!Array.isArray(emails) || emails.length === 0) {
+      return res.status(400).json({ error: 'No emails provided' });
     }
 
-    res.status(201).json(invites);
+    const results = [];
+
+    for (const raw of emails) {
+      const email = String(raw).toLowerCase().trim();
+      const code = `KCL-TEACH-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+
+      const invite = new TeacherInvite({ email, code, status: 'pending' });
+      await invite.save();
+
+      // Try sending the email; do not fail all if one send fails
+      try {
+        await sendTeacherInvite({ to: email, code });
+        results.push({ email, code, status: 'sent' });
+      } catch (mailErr) {
+        console.error('Invite email failed for', email, mailErr);
+        results.push({ email, code, status: 'queued', error: 'Email failed to send; please retry or verify SMTP settings' });
+      }
+    }
+
+    res.status(201).json({ invites: results });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

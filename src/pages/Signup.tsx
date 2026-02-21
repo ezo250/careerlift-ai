@@ -5,6 +5,7 @@ import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
+import keplerLogo from '@/assets/kepler-logo.png';
 
 export default function Signup() {
   const [isTeacher, setIsTeacher] = useState(false);
@@ -64,7 +65,7 @@ export default function Signup() {
           transition={{ duration: 0.8 }}
           className="relative text-center"
         >
-          <img src="/kepler-logo.png" alt="Kepler" className="h-20 mx-auto mb-6 brightness-0 invert" />
+          <img src={keplerLogo} alt="Kepler" className="h-20 mx-auto mb-6 brightness-0 invert" />
           <h2 className="font-display text-3xl font-bold text-primary-foreground mb-3">Join CareerLift</h2>
           <p className="text-primary-foreground/70 text-lg max-w-md">
             Create your student account and start building a career-ready portfolio with AI-powered feedback.
@@ -81,7 +82,7 @@ export default function Signup() {
           className="w-full max-w-md"
         >
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <img src="/kepler-logo.png" alt="Kepler" className="h-10" />
+            <img src={keplerLogo} alt="Kepler" className="h-10" />
             <span className="font-display text-xl font-bold text-foreground">CareerLift</span>
           </div>
 

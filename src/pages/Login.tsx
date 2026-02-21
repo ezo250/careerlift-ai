@@ -36,7 +36,7 @@ export default function Login() {
           transition={{ duration: 0.8 }}
           className="relative text-center"
         >
-          <img src="/kepler-logo.png" alt="Kepler" className="h-20 mx-auto mb-6 brightness-0 invert" />
+          <img src={keplerLogo} alt="Kepler" className="h-20 mx-auto mb-6 brightness-0 invert" />
           <h2 className="font-display text-3xl font-bold text-primary-foreground mb-3">Kepler CareerLift</h2>
           <p className="text-primary-foreground/70 text-lg max-w-md">
             Empowering students to build outstanding careers through AI-powered resume and cover letter feedback.
@@ -53,7 +53,7 @@ export default function Login() {
           className="w-full max-w-md"
         >
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <img src="/kepler-logo.png" alt="Kepler" className="h-10" />
+            <img src={keplerLogo} alt="Kepler" className="h-10" />
             <span className="font-display text-xl font-bold text-foreground">CareerLift</span>
           </div>
 
