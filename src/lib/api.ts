@@ -18,13 +18,15 @@ class ApiClient {
   }
 
   async request(endpoint: string, options: RequestInit = {}) {
+    // Always read token from localStorage to avoid stale token issues
+    const currentToken = localStorage.getItem('kepler_token') || this.token;
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
       ...options.headers,
     };
 
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
     }
 
     const response = await fetch(`${API_URL}${endpoint}`, {

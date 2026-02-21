@@ -181,7 +181,6 @@ export default function SectionsPage() {
                     Assign Teacher
                   </label>
                   <Select
-                    value=""
                     onValueChange={(value) => {
                       if (value) {
                         handleAssignTeacher(section._id, value);
