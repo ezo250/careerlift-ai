@@ -4,8 +4,8 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get dashboard stats
-router.get('/', auth, async (req, res) => {
+// Get dashboard stats (public endpoint)
+router.get('/', async (req, res) => {
   try {
     const totalStudents = await User.countDocuments({ role: 'student', isActive: true });
     const totalTeachers = await User.countDocuments({ role: 'teacher', isActive: true });
