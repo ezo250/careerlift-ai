@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, LogIn, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import keplerLogo from '@/assets/Kepler_Logo.png';
+import keplerLogo from '@/assets/Kepler_Logo.svg';
 
 export default function Login() {
   const [email, setEmail] = useState('');

@@ -5,7 +5,7 @@ import { Eye, EyeOff, UserPlus, Sparkles, GraduationCap, Users } from 'lucide-re
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import keplerLogo from '@/assets/Kepler_Logo.png';
+import keplerLogo from '@/assets/Kepler_Logo.svg';
 
 export default function Signup() {
   const [isTeacher, setIsTeacher] = useState(false);

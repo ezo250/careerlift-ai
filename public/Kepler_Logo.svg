@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <title>Kepler College Logo</title>
+  <!-- Left navy chevron -->
+  <polygon points="80,60 300,60 220,150 80,150" fill="#0E4D72" />
+
+  <!-- Right green chevron -->
+  <polygon points="300,60 620,60 520,150 300,150" fill="#2FB76B" />
+
+  <!-- Center overlap shadow -->
+  <polygon points="300,60 220,150 300,150" fill="#0B3C56" opacity="0.95" />
+
+  <!-- Text -->
+  <text x="80" y="250" font-family="Inter, Arial, Helvetica, sans-serif" font-size="64" fill="#0E4D72">Kepler College</text>
+</svg>
