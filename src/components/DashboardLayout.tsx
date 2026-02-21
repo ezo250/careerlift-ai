@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const navItems = user.role === 'superadmin' ? adminNav : user.role === 'teacher' ? teacherNav : studentNav;
   const roleLabel = user.role === 'superadmin' ? 'Super Admin' : user.role === 'teacher' ? 'Teacher' : 'Student';
-  const roleColor = user.role === 'superadmin' ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : user.role === 'teacher' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-blue-500 to-indigo-500';
+  const roleColor = user.role === 'superadmin' ? 'bg-[#0E4D72]' : user.role === 'teacher' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-blue-500 to-indigo-500';
 
   const handleLogout = () => {
     logout();
