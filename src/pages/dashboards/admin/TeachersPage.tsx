@@ -49,26 +49,13 @@ export default function TeachersPage() {
     
     if (emails.length === 0) {
       toast.error('Please enter at least one email');
-      return;
-    }
-
-    try {
-      const result = await api.createInvites(emails);
-      toast.success(`Invites sent to ${emails.length} email(s)`);
-      setInviteEmails('');
-      setShowInvite(false);
-      loadData();
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleManualAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await api.request('/users/manual-teacher', {
-        method: 'POST',
-        body: JSON.stringify(manualData)
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => openEditModal('teacher', teacher)}
+                >
+                  Edit
+                </Button>
       });
       toast.success('Teacher added successfully with password: 123');
       setManualData({ name: '', email: '' });
@@ -87,6 +74,11 @@ export default function TeachersPage() {
   // Modal state for delete confirmation
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmTarget, setConfirmTarget] = useState<{ type: 'teacher' | 'invite'; id: string; label: string } | null>(null);
+
+  // Edit modal state
+  const [editOpen, setEditOpen] = useState(false);
+  const [editMode, setEditMode] = useState<'teacher' | 'invite' | null>(null);
+  const [editData, setEditData] = useState<any>(null);
 
   const openDeleteConfirm = (type: 'teacher' | 'invite', id: string, label: string) => {
     setConfirmTarget({ type, id, label });
@@ -108,6 +100,37 @@ export default function TeachersPage() {
       loadData();
     } catch (err: any) {
       toast.error(err.message || 'Delete failed');
+    }
+  };
+
+  const openEditModal = (mode: 'teacher' | 'invite', data: any) => {
+    setEditMode(mode);
+    setEditData(data);
+    setEditOpen(true);
+  };
+
+  const handleEditSave = async () => {
+    try {
+      if (!editMode || !editData) return;
+      if (editMode === 'teacher') {
+        await api.request(`/users/${editData._id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ name: editData.name, email: editData.email })
+        });
+        toast.success('Teacher updated');
+      } else {
+        await api.request(`/invites/${editData._id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ email: editData.email })
+        });
+        toast.success('Invite updated');
+      }
+      setEditOpen(false);
+      setEditMode(null);
+      setEditData(null);
+      loadData();
+    } catch (err: any) {
+      toast.error(err.message || 'Update failed');
     }
   };
 
@@ -319,20 +342,7 @@ export default function TeachersPage() {
                 <Button
                   size="sm"
                   variant="ghost"
-                  onClick={async () => {
-                    const newEmail = window.prompt('Edit invite email', invite.email);
-                    if (!newEmail) return;
-                    try {
-                      await api.request(`/invites/${invite._id}`, {
-                        method: 'PATCH',
-                        body: JSON.stringify({ email: newEmail })
-                      });
-                      toast.success('Invite updated');
-                      loadData();
-                    } catch (err: any) {
-                      toast.error(err.message || 'Update failed');
-                    }
-                  }}
+                  onClick={() => openEditModal('invite', invite)}
                 >
                   Edit
                 </Button>
@@ -365,6 +375,44 @@ export default function TeachersPage() {
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setConfirmOpen(false)}>Cancel</Button>
               <Button className="bg-destructive text-destructive-foreground" onClick={handleConfirmDelete}>Delete</Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit {editMode === 'teacher' ? 'Teacher' : 'Invite'}</DialogTitle>
+            <DialogDescription>
+              {editMode === 'teacher' ? 'Update teacher details' : 'Update invite email'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            {editMode === 'teacher' && editData && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Full name</label>
+                  <input className="kepler-input w-full" value={editData.name || ''} onChange={e => setEditData({ ...editData, name: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Email</label>
+                  <input className="kepler-input w-full" value={editData.email || ''} onChange={e => setEditData({ ...editData, email: e.target.value })} />
+                </div>
+              </>
+            )}
+            {editMode === 'invite' && editData && (
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Email</label>
+                <input className="kepler-input w-full" value={editData.email || ''} onChange={e => setEditData({ ...editData, email: e.target.value })} />
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
+              <Button className="bg-primary text-primary-foreground" onClick={handleEditSave}>Save</Button>
             </div>
           </DialogFooter>
         </DialogContent>
