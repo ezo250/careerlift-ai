@@ -1,26 +1,10 @@
-import { useState, useEffect, type ElementType } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, type Variants } from 'framer-motion';
-import { ArrowRight, Users, Brain, FileText, BarChart3, Shield, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import keplerLogo from '@/assets/kepler-logo.png';
 import { api } from '@/lib/api';
-
-type Feature = { icon: ElementType; title: string; description: string };
-
-const features: Feature[] = [
-  { icon: Brain, title: 'Grading', description: 'Instant, detailed feedback on resumes and cover letters using advanced AI analysis.' },
-  { icon: FileText, title: 'Smart Checklists', description: 'Customizable grading criteria aligned with specific job descriptions.' },
-  { icon: Users, title: 'Section Management', description: 'Organize students into cohorts and assign career staff effortlessly.' },
-  { icon: BarChart3, title: 'Analytics Dashboard', description: 'Track student progress, identify common weaknesses, and select top candidates.' },
-  { icon: Shield, title: 'Role-Based Access', description: 'Secure access for administrators, teachers, and students with unique permissions.' },
-  { icon: Sparkles, title: 'Multiple Submissions', description: 'Allow students to iterate and improve with configurable submission limits.' },
-];
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.6, ease: 'easeOut' } }),
-};
 
 export default function Landing() {
   const [stats, setStats] = useState({
@@ -126,50 +110,6 @@ export default function Landing() {
                 <div className="text-sm text-muted-foreground">{s.label}</div>
               </div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="text-center mb-14"
-          >
-            <motion.h2 variants={fadeUp} custom={0} className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Everything You Need
-            </motion.h2>
-            <motion.p variants={fadeUp} custom={1} className="text-muted-foreground text-lg max-w-xl mx-auto">
-              A complete platform connecting students, teachers, and administrators for career success.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {features.map((f, i) => {
-              const Icon = f.icon;
-              return (
-                <motion.div
-                  key={i}
-                  variants={fadeUp}
-                  custom={i + 2}
-                  className="glass-card-elevated p-6 group hover:scale-[1.02] transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <Icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-display text-lg font-semibold text-foreground mb-2">{f.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
-                </motion.div>
-              );
-            })}
           </motion.div>
         </div>
       </section>
