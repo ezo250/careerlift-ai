@@ -4,31 +4,51 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { DEMO_SECTIONS } from '@/data/mockData';
-import keplerLogo from '@/assets/kepler-logo.png';
+import { api } from '@/lib/api';
 
 export default function Signup() {
+  const [isTeacher, setIsTeacher] = useState(false);
+  const [inviteCode, setInviteCode] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [sectionId, setSectionId] = useState('');
+  const [sections, setSections] = useState<any[]>([]);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
+  useState(() => {
+    api.getSections().then(setSections).catch(() => {});
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!sectionId) {
-      setError('Please select your section');
-      return;
-    }
-    const result = await signup(email, password, name, sectionId);
-    if (result.success) {
-      navigate('/dashboard');
+    
+    if (isTeacher) {
+      if (!inviteCode) {
+        setError('Please enter your invite code');
+        return;
+      }
+      const result = await signup(email, password, name, '', inviteCode);
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        setError(result.error || 'Signup failed');
+      }
     } else {
-      setError(result.error || 'Signup failed');
+      if (!sectionId) {
+        setError('Please select your section');
+        return;
+      }
+      const result = await signup(email, password, name, sectionId);
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        setError(result.error || 'Signup failed');
+      }
     }
   };
 
@@ -66,7 +86,26 @@ export default function Signup() {
           </div>
 
           <h1 className="font-display text-3xl font-bold text-foreground mb-2">Create Account</h1>
-          <p className="text-muted-foreground mb-8">Sign up as a student to get started</p>
+          <p className="text-muted-foreground mb-8">Sign up to get started</p>
+
+          <div className="flex gap-2 mb-6">
+            <Button
+              type="button"
+              onClick={() => setIsTeacher(false)}
+              variant={!isTeacher ? 'default' : 'outline'}
+              className="flex-1"
+            >
+              Student
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setIsTeacher(true)}
+              variant={isTeacher ? 'default' : 'outline'}
+              className="flex-1"
+            >
+              Teacher
+            </Button>
+          </div>
 
           {error && (
             <motion.div
@@ -79,6 +118,19 @@ export default function Signup() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isTeacher && (
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Invite Code</label>
+                <input
+                  type="text"
+                  value={inviteCode}
+                  onChange={e => setInviteCode(e.target.value)}
+                  className="kepler-input"
+                  placeholder="Enter your invite code"
+                  required
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
               <input
@@ -121,20 +173,22 @@ export default function Signup() {
                 </button>
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Select Your Section</label>
-              <select
-                value={sectionId}
-                onChange={e => setSectionId(e.target.value)}
-                className="kepler-input"
-                required
-              >
-                <option value="">Choose a section...</option>
-                {DEMO_SECTIONS.map(s => (
-                  <option key={s.id} value={s.id}>{s.name} — {s.description}</option>
-                ))}
-              </select>
-            </div>
+            {!isTeacher && (
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Select Your Section</label>
+                <select
+                  value={sectionId}
+                  onChange={e => setSectionId(e.target.value)}
+                  className="kepler-input"
+                  required
+                >
+                  <option value="">Choose a section...</option>
+                  {sections.map(s => (
+                    <option key={s._id} value={s._id}>{s.name} — {s.description}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -154,10 +208,6 @@ export default function Signup() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account? <Link to="/login" className="text-primary font-medium hover:underline">Sign in</Link>
-          </p>
-
-          <p className="mt-4 text-center text-xs text-muted-foreground">
-            Teachers: Check your email for an invite code from your administrator.
           </p>
         </motion.div>
       </div>
