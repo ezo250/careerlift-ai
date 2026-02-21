@@ -74,7 +74,7 @@ export default function Landing() {
               <span className="gradient-text">Career Journey</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              Kepler CareerLift uses AI to grade resumes and cover letters against real job descriptions, 
+              Kepler CareerLift grades resumes and cover letters against real job descriptions, 
               helping students land their dream jobs with actionable feedback.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
