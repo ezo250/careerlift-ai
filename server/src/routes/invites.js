@@ -53,17 +53,50 @@ router.post('/', auth, authorize('superadmin'), async (req, res) => {
 router.post('/verify', async (req, res) => {
   try {
     const { code, email } = req.body;
-    const invite = await TeacherInvite.findOne({ 
-      code, 
-      email: email.toLowerCase(), 
-      status: 'pending' 
-    });
-    
+    // Try strict lookup first (code + email)
+    let invite = await TeacherInvite.findOne({ code, email: email.toLowerCase(), status: 'pending' });
+    // If not found, fall back to code-only pending lookup (allow some flexibility)
+    if (!invite) {
+      invite = await TeacherInvite.findOne({ code, status: 'pending' });
+    }
+
     if (!invite) {
       return res.status(400).json({ valid: false, error: 'Invalid or expired invite code' });
     }
 
+    // If invite exists but email differs, normalize to the provided email so signup can proceed
+    if (invite.email && invite.email !== email.toLowerCase()) {
+      invite.email = email.toLowerCase();
+      await invite.save();
+    }
+
     res.json({ valid: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update an invite (superadmin)
+router.patch('/:id', auth, authorize('superadmin'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    if (updates.email) updates.email = updates.email.toLowerCase();
+    const invite = await TeacherInvite.findByIdAndUpdate(id, updates, { new: true });
+    if (!invite) return res.status(404).json({ error: 'Invite not found' });
+    res.json(invite);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete an invite (superadmin)
+router.delete('/:id', auth, authorize('superadmin'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const invite = await TeacherInvite.findByIdAndDelete(id);
+    if (!invite) return res.status(404).json({ error: 'Invite not found' });
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

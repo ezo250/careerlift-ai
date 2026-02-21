@@ -206,10 +206,48 @@ export default function TeachersPage() {
                   <p className="text-xs text-muted-foreground">{teacher.email}</p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground">
+              <div className="text-right flex items-center gap-3">
+                <p className="text-xs text-muted-foreground mr-4">
                   {teacher.assignedSections?.length || 0} section(s) assigned
                 </p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={async () => {
+                    const newName = window.prompt('Edit teacher name', teacher.name);
+                    if (!newName) return;
+                    try {
+                      await api.request(`/users/${teacher._id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ name: newName })
+                      });
+                      toast.success('Teacher updated');
+                      loadData();
+                    } catch (err: any) {
+                      toast.error(err.message || 'Update failed');
+                    }
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={async () => {
+                    if (!window.confirm('Delete this teacher? This action cannot be undone.')) return;
+                    try {
+                      await api.request(`/users/${teacher._id}`, {
+                        method: 'DELETE'
+                      });
+                      toast.success('Teacher deleted');
+                      loadData();
+                    } catch (err: any) {
+                      toast.error(err.message || 'Delete failed');
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
               </div>
             </div>
           ))}
@@ -232,7 +270,7 @@ export default function TeachersPage() {
                 <p className="text-sm font-medium text-foreground">{invite.email}</p>
                 <p className="text-xs text-muted-foreground font-mono">{invite.code}</p>
               </div>
-              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                   invite.status === 'accepted'
                     ? 'bg-secondary/10 text-secondary flex items-center gap-1'
@@ -251,6 +289,42 @@ export default function TeachersPage() {
                   className="text-primary hover:bg-primary/10"
                 >
                   <Copy className="w-3 h-3 mr-1" /> Copy
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={async () => {
+                    const newEmail = window.prompt('Edit invite email', invite.email);
+                    if (!newEmail) return;
+                    try {
+                      await api.request(`/invites/${invite._id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ email: newEmail })
+                      });
+                      toast.success('Invite updated');
+                      loadData();
+                    } catch (err: any) {
+                      toast.error(err.message || 'Update failed');
+                    }
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={async () => {
+                    if (!window.confirm('Delete this invite?')) return;
+                    try {
+                      await api.request(`/invites/${invite._id}`, { method: 'DELETE' });
+                      toast.success('Invite deleted');
+                      loadData();
+                    } catch (err: any) {
+                      toast.error(err.message || 'Delete failed');
+                    }
+                  }}
+                >
+                  Delete
                 </Button>
               </div>
             </div>
