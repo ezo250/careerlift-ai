@@ -251,13 +251,20 @@ export default function Signup() {
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">Select Your Section</label>
                   <Select value={sectionId} onValueChange={setSectionId} required>
-                    <SelectTrigger className="w-full h-12 px-4 rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-foreground focus:ring-2 focus:ring-primary">
+                    <SelectTrigger className="w-full h-12 px-4 rounded-xl border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm hover:shadow-md">
                       <SelectValue placeholder="Choose a section..." />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
+                    <SelectContent className="rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl">
                       {sections.map(s => (
-                        <SelectItem key={s._id} value={s._id} className="cursor-pointer hover:bg-primary/10">
-                          {s.name} — {s.description}
+                        <SelectItem 
+                          key={s._id} 
+                          value={s._id} 
+                          className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10 rounded-lg m-1 transition-colors"
+                        >
+                          <div className="flex flex-col py-1">
+                            <span className="font-semibold text-foreground">{s.name}</span>
+                            <span className="text-xs text-muted-foreground">{s.description}</span>
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
