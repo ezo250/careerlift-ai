@@ -217,16 +217,12 @@ Respond ONLY with valid JSON (no markdown, no code blocks):`;
     
     // ULTIMATE ADVANCED MODEL - Better than any GPT-5 variant
     const response = await window.puter.ai.chat(analysisPrompt, {
-      model: 'openrouter:openai/gpt-5.2-pro', // MOST POWERFUL available
-      temperature: 0.12, // Ultra-low for maximum consistency
-      max_tokens: 10000, // Maximum comprehensive analysis
-      top_p: 0.98, // Highest quality tokens
-      presence_penalty: 0.1,
-      frequency_penalty: 0.1,
-      timeout: 30000 // 30 second max timeout
+      model: 'gpt-4o', // Using reliable model
+      temperature: 0.3,
+      max_tokens: 4000
     });
 
-    console.log('✅ QUANTUM AI ANALYSIS COMPLETE');
+    console.log('✅ QUANTUM AI ANALYSIS COMPLETE', response);
 
     // Ultra-robust JSON parsing
     let parsedResponse;
@@ -320,7 +316,8 @@ Respond ONLY with valid JSON (no markdown, no code blocks):`;
     }
   } catch (error: any) {
     console.error('QUANTUM AI Error:', error);
-    throw new Error(`AI Grading failed: ${error.message}`);
+    const errorMsg = error?.message || error?.error || error?.toString() || 'Unknown error';
+    throw new Error(`AI Grading failed: ${errorMsg}`);
   }
 };
 
