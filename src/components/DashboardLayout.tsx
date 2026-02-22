@@ -55,9 +55,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#0E4D72] p-6 space-y-8">
+    <div className="flex flex-col h-full bg-[#0E4D72] p-4 space-y-4">
       {/* Logo */}
-      <div className="flex items-center gap-3 pb-4 border-b border-white/20">
+      <div className="flex items-center gap-3 pb-3 border-b border-white/20">
         <img src="/logo.jpg" alt="Kepler" className="h-10 drop-shadow-md" />
         <div>
           <div className="font-display font-bold text-white text-base">CareerLift</div>
@@ -68,7 +68,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const active = location.pathname === item.path;
           return (
@@ -77,7 +77,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               to={item.path}
               onClick={() => setSidebarOpen(false)}
               className={`
-                flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
+                flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200
                 ${active 
                   ? 'bg-white/20 text-white shadow-lg' 
                   : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -93,9 +93,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </nav>
 
       {/* User */}
-      <div className="px-3 py-4 border-t border-white/20">
-        <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-xl bg-white/10">
-          <div className={`w-10 h-10 rounded-full ${roleColor} flex items-center justify-center text-white font-bold text-sm shadow-md`}>
+      <div className="px-2 py-3 border-t border-white/20 space-y-2">
+        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10">
+          <div className={`w-10 h-10 rounded-full ${roleColor} flex items-center justify-center text-white font-bold text-sm shadow-md flex-shrink-0`}>
             {user.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div className="flex-1 min-w-0">
@@ -105,9 +105,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium"
+          className="flex items-center gap-3 px-4 py-2 rounded-lg w-full text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium text-sm"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-5 h-5 flex-shrink-0" />
           <span>Sign Out</span>
         </button>
       </div>
