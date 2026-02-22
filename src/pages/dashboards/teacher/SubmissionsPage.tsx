@@ -25,13 +25,9 @@ export default function SubmissionsPage() {
         api.getJobs()
       ]);
       
-      // Filter submissions for teacher's sections
-      const teacherSubs = submissionsData.filter((sub: any) => {
-        const studentSectionId = sub.studentId?.sectionId || sub.studentId?.sectionId?._id;
-        return user?.assignedSections?.includes(studentSectionId);
-      });
-      
-      setSubmissions(teacherSubs);
+      // Note: Server already filters submissions for teachers by their assigned sections
+      // The /api/submissions endpoint handles role-based filtering
+      setSubmissions(submissionsData);
       setJobs(jobsData);
     } catch (error: any) {
       toast.error(error.message);

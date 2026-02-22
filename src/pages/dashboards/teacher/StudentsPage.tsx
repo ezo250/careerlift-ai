@@ -22,9 +22,15 @@ export default function StudentsPage() {
         api.request('/users'),
         api.getSubmissions()
       ]);
-      const studentsList = usersData.filter((u: any) => 
-        u.role === 'student' && user?.assignedSections?.includes(u.sectionId)
-      );
+      
+      // Extract section IDs from assigned sections (handle both populated and non-populated)
+      const assignedSectionIds = user?.assignedSections?.map((s: any) => s._id || s) || [];
+      
+      const studentsList = usersData.filter((u: any) => {
+        const studentSectionId = u.sectionId?._id || u.sectionId;
+        return u.role === 'student' && assignedSectionIds.includes(studentSectionId);
+      });
+      
       setStudents(studentsList);
       setSubmissions(submissionsData);
     } catch (error: any) {

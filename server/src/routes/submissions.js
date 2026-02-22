@@ -12,12 +12,14 @@ router.get('/', auth, async (req, res) => {
     if (req.user.role === 'student') {
       query.studentId = req.user._id;
     } else if (req.user.role === 'teacher') {
-      const jobs = await JobSubmission.find({ sectionId: { $in: req.user.assignedSections } });
+      // Extract section IDs (handle both populated and non-populated)
+      const sectionIds = req.user.assignedSections?.map(s => s._id || s) || [];
+      const jobs = await JobSubmission.find({ sectionId: { $in: sectionIds } });
       query.jobId = { $in: jobs.map(j => j._id) };
     }
 
     const submissions = await StudentSubmission.find(query)
-      .populate('studentId', 'name email')
+      .populate('studentId', 'name email sectionId')
       .populate('jobId')
       .sort('-createdAt');
     res.json(submissions);
