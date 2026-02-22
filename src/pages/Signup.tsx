@@ -250,22 +250,29 @@ export default function Signup() {
               {!isTeacher && (
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">Select Your Section</label>
-                  <Select value={sectionId} onValueChange={setSectionId} required>
+                  <Select value={sectionId} onValueChange={setSectionId}>
                     <SelectTrigger className="w-full h-12 px-4 rounded-xl border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm hover:shadow-md">
                       <SelectValue placeholder="Choose a section..." />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl">
-                      {sections.map(s => (
-                        <SelectItem 
-                          key={s._id} 
-                          value={s._id} 
-                          className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10 transition-colors py-2"
-                        >
-                          {s.name}
-                        </SelectItem>
-                      ))}
+                    <SelectContent className="rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-xl max-h-[300px] overflow-y-auto z-[100]">
+                      {sections.length > 0 ? (
+                        sections.map(s => (
+                          <SelectItem 
+                            key={s._id} 
+                            value={s._id} 
+                            className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10 transition-colors py-3 px-4"
+                          >
+                            {s.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="py-3 px-4 text-sm text-muted-foreground">No sections available</div>
+                      )}
                     </SelectContent>
                   </Select>
+                  {sections.length === 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">Loading sections...</p>
+                  )}
                 </div>
               )}
 

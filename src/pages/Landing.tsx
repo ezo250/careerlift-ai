@@ -35,7 +35,7 @@ export default function Landing() {
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Kepler" className="h-10 w-auto" />
+            <img src="/logo.jpg" alt="Kepler" className="h-10 w-auto" />
             <span className="font-display text-xl font-bold text-foreground">CareerLift</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -80,13 +80,13 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/signup">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-base px-8 py-6 font-semibold group">
-                  Start as Student
+                  Get Started
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/login">
                 <Button size="lg" variant="outline" className="text-base px-8 py-6 font-semibold border-border hover:bg-muted">
-                  Staff Login
+                  Login
                 </Button>
               </Link>
             </div>
@@ -118,7 +118,7 @@ export default function Landing() {
       <footer className="py-10 border-t border-border">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Kepler" className="h-8 w-auto" />
+            <img src="/logo.jpg" alt="Kepler" className="h-8 w-auto" />
             <span className="font-display font-bold text-foreground">CareerLift</span>
           </div>
           <p className="text-sm text-muted-foreground"> 2026 Kepler College. All rights reserved. | Developed by Amani Alain</p>
