@@ -16,13 +16,26 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [sectionId, setSectionId] = useState('');
   const [sections, setSections] = useState<any[]>([]);
+  const [sectionsLoading, setSectionsLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.getSections().then(setSections).catch(() => {});
+    setSectionsLoading(true);
+    api.getSections()
+      .then(data => {
+        console.log('Sections loaded:', data);
+        setSections(data || []);
+      })
+      .catch(err => {
+        console.error('Failed to load sections:', err);
+        setSections([]);
+      })
+      .finally(() => {
+        setSectionsLoading(false);
+      });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -270,8 +283,11 @@ export default function Signup() {
                       )}
                     </SelectContent>
                   </Select>
-                  {sections.length === 0 && (
+                  {sections.length === 0 && sectionsLoading && (
                     <p className="text-xs text-muted-foreground mt-1">Loading sections...</p>
+                  )}
+                  {sections.length === 0 && !sectionsLoading && (
+                    <p className="text-xs text-destructive mt-1">No sections found. Please contact admin.</p>
                   )}
                 </div>
               )}
