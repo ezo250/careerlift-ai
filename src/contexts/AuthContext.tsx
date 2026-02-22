@@ -50,8 +50,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         name: data.user.name,
         role: data.user.role,
         avatar: data.user.avatar,
-        assignedSections: data.user.assignedSections,
-        sectionId: data.user.sectionId
+        assignedSections: data.user.assignedSections?.map((s: any) => s._id || s),
+        sectionId: data.user.sectionId?._id || data.user.sectionId
       });
       setIsLoading(false);
       return { success: true };
@@ -76,8 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: data.user.email,
         name: data.user.name,
         role: data.user.role,
-        assignedSections: data.user.assignedSections,
-        sectionId: data.user.sectionId
+        assignedSections: data.user.assignedSections?.map((s: any) => s._id || s),
+        sectionId: data.user.sectionId?._id || data.user.sectionId
       });
       setIsLoading(false);
       return { success: true };

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import keplerLogo from '@/assets/Kepler_Logo.png';
+import keplerLogo from '@/assets/logo.png';
 
 export default function Signup() {
   const [isTeacher, setIsTeacher] = useState(false);

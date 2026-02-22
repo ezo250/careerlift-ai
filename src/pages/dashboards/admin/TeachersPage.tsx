@@ -49,17 +49,14 @@ export default function TeachersPage() {
     
     if (emails.length === 0) {
       toast.error('Please enter at least one email');
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => openEditModal('teacher', teacher)}
-                >
-                  Edit
-                </Button>
-      });
-      toast.success('Teacher added successfully with password: 123');
-      setManualData({ name: '', email: '' });
-      setShowManualAdd(false);
+      return;
+    }
+    
+    try {
+      await api.createInvites(emails);
+      toast.success(`${emails.length} invite(s) sent successfully`);
+      setInviteEmails('');
+      setShowInvite(false);
       loadData();
     } catch (error: any) {
       toast.error(error.message);
@@ -69,6 +66,22 @@ export default function TeachersPage() {
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
     toast.success('Code copied to clipboard');
+  };
+
+  const handleManualAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await api.request('/users/manual-teacher', {
+        method: 'POST',
+        body: JSON.stringify(manualData)
+      });
+      toast.success('Teacher added successfully with password: 123');
+      setManualData({ name: '', email: '' });
+      setShowManualAdd(false);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   // Modal state for delete confirmation
