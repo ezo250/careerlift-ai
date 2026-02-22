@@ -91,7 +91,7 @@ export default function Login() {
             className="mt-8 flex items-center justify-center gap-2 text-white/80 text-sm"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Powered by AI Technology</span>
+            <span>Developed by Amani Alain</span>
           </motion.div>
         </motion.div>
       </div>
@@ -186,25 +186,6 @@ export default function Login() {
                 Create an account
               </Link>
             </p>
-
-            {/* Demo credentials */}
-            <div className="mt-8 p-4 rounded-xl bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-850 border border-slate-200 dark:border-slate-700">
-              <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Demo Credentials</p>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white/50 dark:bg-slate-900/50">
-                  <span className="font-medium text-foreground">Super Admin</span>
-                  <code className="text-primary font-mono text-[10px]">amanialaindrin7@gmail.com / 123</code>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white/50 dark:bg-slate-900/50">
-                  <span className="font-medium text-foreground">Teacher</span>
-                  <code className="text-secondary font-mono text-[10px]">teacher@kepler.edu / teacher123</code>
-                </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white/50 dark:bg-slate-900/50">
-                  <span className="font-medium text-foreground">Student</span>
-                  <code className="text-kepler-green font-mono text-[10px]">student@kepler.edu / student123</code>
-                </div>
-              </div>
-            </div>
           </div>
         </motion.div>
       </div>

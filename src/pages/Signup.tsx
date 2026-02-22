@@ -120,7 +120,7 @@ export default function Signup() {
             className="mt-8 flex items-center justify-center gap-2 text-white/80 text-sm"
           >
             <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Grading System</span>
+            <span>Developed by Amani Alain</span>
           </motion.div>
         </motion.div>
       </div>
