@@ -149,9 +149,9 @@ export default function GradesPage() {
 
       {/* Submissions table */}
       <div className="glass-card-elevated p-6">
-        <div className="overflow-x-auto">
+        <div className={`overflow-x-auto ${filteredSubmissions.length > 7 ? 'max-h-[600px] overflow-y-auto' : ''}`}>
           <table className="w-full text-sm">
-            <thead>
+            <thead className="sticky top-0 bg-card z-10">
               <tr className="border-b border-border text-left">
                 <th className="pb-3 font-medium text-muted-foreground">Student</th>
                 <th className="pb-3 font-medium text-muted-foreground">Job</th>
