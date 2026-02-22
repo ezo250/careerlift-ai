@@ -4,56 +4,33 @@ declare global {
   }
 }
 
-// Initialize Puter and authenticate as guest instantly
+// Initialize Puter instantly without any authentication
 let puterInitialized = false;
-let puterInitPromise: Promise<void> | null = null;
 
 const initializePuter = async (): Promise<void> => {
-  // Return existing promise if already initializing
-  if (puterInitPromise) return puterInitPromise;
-  
-  // Return if already initialized
   if (puterInitialized && window.puter) {
     return;
   }
 
-  puterInitPromise = (async () => {
-    try {
-      // Wait for Puter to load
-      let retries = 0;
-      while (!window.puter && retries < 50) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        retries++;
-      }
-
-      if (!window.puter) {
-        throw new Error('Puter failed to load');
-      }
-
-      // Authenticate as guest user instantly (< 100ms)
-      try {
-        // Use Puter's built-in free tier access
-        await Promise.race([
-          window.puter.auth.init?.() || Promise.resolve(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Init timeout')), 500))
-        ]).catch(() => {
-          // If init fails, continue anyway - Puter allows free API usage
-          console.log('✓ Puter guest session initialized');
-        });
-      } catch (e) {
-        // Continue without explicit auth - Puter supports anonymous API calls
-        console.log('✓ Puter API ready (guest access)');
-      }
-
-      puterInitialized = true;
-    } catch (error) {
-      console.error('Puter initialization warning:', error);
-      // Don't throw - Puter can still work without explicit auth
-      puterInitialized = true;
+  try {
+    // Wait for Puter to load (max 5 seconds)
+    let retries = 0;
+    while (!window.puter && retries < 50) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      retries++;
     }
-  })();
 
-  return puterInitPromise;
+    if (!window.puter) {
+      throw new Error('Puter failed to load');
+    }
+
+    // Puter is ready - no authentication needed for free tier
+    puterInitialized = true;
+    console.log('✓ Puter AI ready (guest mode)');
+  } catch (error) {
+    console.error('Puter initialization error:', error);
+    puterInitialized = true; // Continue anyway
+  }
 };
 
 export interface GradeResult {
@@ -90,7 +67,7 @@ export const gradeDocument = async (
   checklist: any,
   jobDescription: string
 ): Promise<GradeResult> => {
-  // Initialize Puter + guaranteed guest authentication (< 1 second)
+  // Initialize Puter instantly (no authentication required)
   await initializePuter();
 
   if (!window.puter) {
