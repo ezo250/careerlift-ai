@@ -55,12 +55,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
+    <div className="flex flex-col h-full bg-[#0E4D72] p-6 space-y-8">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center gap-3 pb-4 border-b border-white/20">
         <img src="/logo.jpg" alt="Kepler" className="h-10 drop-shadow-md" />
         <div>
-          <div className="font-display font-bold text-foreground text-base">CareerLift</div>
+          <div className="font-display font-bold text-white text-base">CareerLift</div>
           <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${roleColor} text-white mt-0.5 shadow-sm`}>
             {roleLabel}
           </div>
@@ -79,8 +79,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               className={`
                 flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200
                 ${active 
-                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]' 
-                  : 'text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800'
+                  ? 'bg-white/20 text-white shadow-lg' 
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
                 }
               `}
             >
@@ -93,19 +93,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </nav>
 
       {/* User */}
-      <div className="px-3 py-4 border-t border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-xl bg-slate-100 dark:bg-slate-800">
+      <div className="px-3 py-4 border-t border-white/20">
+        <div className="flex items-center gap-3 px-3 py-3 mb-2 rounded-xl bg-white/10">
           <div className={`w-10 h-10 rounded-full ${roleColor} flex items-center justify-center text-white font-bold text-sm shadow-md`}>
             {user.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+            <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+            <p className="text-xs text-white/60 truncate">{user.email}</p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 font-medium"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 font-medium"
         >
           <LogOut className="w-5 h-5" />
           <span>Sign Out</span>
@@ -117,7 +117,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-72 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl fixed inset-y-0 left-0 z-30 border-r border-slate-200 dark:border-slate-800 shadow-xl">
+      <aside className="hidden lg:block w-72 bg-[#0E4D72] backdrop-blur-xl fixed inset-y-0 left-0 z-30 border-r border-white/20 shadow-xl">
         <SidebarContent />
       </aside>
 
@@ -137,7 +137,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -288 }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-              className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-slate-900 z-50 lg:hidden shadow-2xl"
+              className="fixed inset-y-0 left-0 w-72 bg-[#0E4D72] z-50 lg:hidden shadow-2xl"
             >
               <SidebarContent />
             </motion.aside>
