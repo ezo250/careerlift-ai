@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import keplerLogo from '@/assets/logo.png';
+
 
 export default function Signup() {
   const [isTeacher, setIsTeacher] = useState(false);
@@ -97,7 +97,7 @@ export default function Signup() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-8"
           >
-            <img src={keplerLogo} alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
+            <img src="/logo.png" alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
           </motion.div>
           
           <motion.div
@@ -135,7 +135,7 @@ export default function Signup() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 text-center">
-            <img src={keplerLogo} alt="Kepler College" className="h-16 mx-auto mb-4" />
+            <img src="/logo.png" alt="Kepler College" className="h-16 mx-auto mb-4" />
             <h2 className="font-display text-2xl font-bold text-foreground">Kepler CareerLift</h2>
           </div>
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import keplerLogo from '@/assets/logo.png';
+
 import { api } from '@/lib/api';
 
 export default function Landing() {
@@ -35,7 +35,7 @@ export default function Landing() {
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-3">
-            <img src={keplerLogo} alt="Kepler" className="h-10 w-auto" />
+            <img src="/logo.png" alt="Kepler" className="h-10 w-auto" />
             <span className="font-display text-xl font-bold text-foreground">CareerLift</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -118,7 +118,7 @@ export default function Landing() {
       <footer className="py-10 border-t border-border">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <img src={keplerLogo} alt="Kepler" className="h-8 w-auto" />
+            <img src="/logo.png" alt="Kepler" className="h-8 w-auto" />
             <span className="font-display font-bold text-foreground">CareerLift</span>
           </div>
           <p className="text-sm text-muted-foreground">© 2026 Kepler College. All rights reserved. | Developed by Amani Alain</p>
