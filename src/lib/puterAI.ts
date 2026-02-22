@@ -179,9 +179,19 @@ RETURN ONLY VALID JSON (no markdown, no code blocks):
       let responseText = '';
       
       if (typeof response === 'object' && response !== null) {
-        responseText = response.message || response.content || response.text || JSON.stringify(response);
+        responseText = response.message || response.content || response.text || '';
+        if (!responseText) {
+          responseText = JSON.stringify(response);
+        }
       } else if (typeof response === 'string') {
         responseText = response;
+      } else {
+        throw new Error('Invalid response type');
+      }
+      
+      // Ensure we have a string
+      if (typeof responseText !== 'string') {
+        responseText = String(responseText);
       }
       
       // Clean and parse
