@@ -259,12 +259,9 @@ export default function Signup() {
                         <SelectItem 
                           key={s._id} 
                           value={s._id} 
-                          className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10 rounded-lg m-1 transition-colors"
+                          className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10 transition-colors py-2"
                         >
-                          <div className="flex flex-col py-1">
-                            <span className="font-semibold text-foreground">{s.name}</span>
-                            <span className="text-xs text-muted-foreground">{s.description}</span>
-                          </div>
+                          {s.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
