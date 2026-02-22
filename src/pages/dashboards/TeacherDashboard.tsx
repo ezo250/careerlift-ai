@@ -1,22 +1,83 @@
 import { motion } from 'framer-motion';
 import { Users, FileText, BarChart3, TrendingUp, AlertTriangle, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { DEMO_SUBMISSIONS, DEMO_JOBS, DEMO_USERS, DEMO_SECTIONS } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SubmissionDetail from '@/components/SubmissionDetail';
 import { StudentSubmission } from '@/types';
+import { api } from '@/lib/api';
+
+interface Section {
+  _id: string;
+  name: string;
+}
+
+interface Student {
+  _id: string;
+  name: string;
+  email: string;
+  sectionId: string;
+}
+
+interface Job {
+  _id: string;
+  title: string;
+  sectionId: string;
+}
+
+interface Submission {
+  _id: string;
+  studentId: string;
+  studentName: string;
+  jobId: string;
+  overallScore: number;
+  submissionNumber: number;
+  submittedAt: string;
+  grades: Array<{
+    criterionName: string;
+    percentage: number;
+  }>;
+}
 
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const [selectedSub, setSelectedSub] = useState<StudentSubmission | null>(null);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const assignedSections = DEMO_SECTIONS.filter(s => user?.assignedSections?.includes(s.id));
-  const sectionStudents = DEMO_USERS.filter(u => u.role === 'student' && user?.assignedSections?.includes(u.sectionId || ''));
-  const sectionJobs = DEMO_JOBS.filter(j => user?.assignedSections?.includes(j.sectionId));
-  const sectionSubmissions = DEMO_SUBMISSIONS.filter(sub => {
-    const student = DEMO_USERS.find(u => u.id === sub.studentId);
-    return student && user?.assignedSections?.includes(student.sectionId || '');
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [sectionsData, usersData, submissionsData, jobsData] = await Promise.all([
+          api.getSections(),
+          api.getUsers(),
+          api.getSubmissions(),
+          api.getJobs()
+        ]);
+
+        setSections(sectionsData);
+        setStudents(usersData.filter((u: any) => u.role === 'student'));
+        setSubmissions(submissionsData);
+        setJobs(jobsData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const assignedSections = sections.filter(s => user?.assignedSections?.includes(s._id));
+  const sectionStudents = students.filter(u => user?.assignedSections?.includes(u.sectionId));
+  const sectionJobs = jobs.filter(j => user?.assignedSections?.includes(j.sectionId));
+  const sectionSubmissions = submissions.filter(sub => {
+    const student = students.find(u => u._id === sub.studentId);
+    return student && user?.assignedSections?.includes(student.sectionId);
   });
 
   const avgScore = sectionSubmissions.length
@@ -34,6 +95,19 @@ export default function TeacherDashboard() {
   const avgWeaknesses = Object.entries(weaknesses)
     .map(([area, scores]) => ({ area, avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) }))
     .sort((a, b) => a.avg - b.avg);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div className="h-10 w-64 bg-muted animate-pulse rounded"></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-32 bg-muted animate-pulse rounded-lg"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (selectedSub) {
     return <SubmissionDetail submission={selectedSub} onBack={() => setSelectedSub(null)} />;
@@ -120,14 +194,14 @@ export default function TeacherDashboard() {
           transition={{ delay: 0.3 }}
           className="glass-card-elevated p-6"
         >
-          <h3 className="font-display font-semibold text-foreground mb-4">My Students</h3>
+          <h3 className="font-display font-semibold text-foreground mb-4">My Students ({sectionStudents.length})</h3>
           <div className="space-y-3">
             {sectionStudents.map(student => {
-              const subs = DEMO_SUBMISSIONS.filter(s => s.studentId === student.id);
+              const subs = submissions.filter(s => s.studentId === student._id);
               const bestScore = subs.length ? Math.max(...subs.map(s => s.overallScore)) : 0;
-              const section = DEMO_SECTIONS.find(s => s.id === student.sectionId);
+              const section = sections.find(s => s._id === student.sectionId);
               return (
-                <div key={student.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+                <div key={student._id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-semibold">
                       {student.name.split(' ').map(n => n[0]).join('')}
@@ -160,7 +234,7 @@ export default function TeacherDashboard() {
         transition={{ delay: 0.4 }}
         className="glass-card-elevated p-6"
       >
-        <h3 className="font-display font-semibold text-foreground mb-4">All Submissions</h3>
+        <h3 className="font-display font-semibold text-foreground mb-4">All Submissions ({sectionSubmissions.length})</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -175,9 +249,9 @@ export default function TeacherDashboard() {
             </thead>
             <tbody>
               {sectionSubmissions.map(sub => {
-                const job = DEMO_JOBS.find(j => j.id === sub.jobId);
+                const job = jobs.find(j => j._id === sub.jobId);
                 return (
-                  <tr key={sub.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                  <tr key={sub._id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                     <td className="py-3 font-medium text-foreground">{sub.studentName}</td>
                     <td className="py-3 text-muted-foreground">{job?.title}</td>
                     <td className="py-3 text-muted-foreground">#{sub.submissionNumber}</td>
@@ -190,12 +264,12 @@ export default function TeacherDashboard() {
                         {sub.overallScore}%
                       </span>
                     </td>
-                    <td className="py-3 text-muted-foreground">{sub.submittedAt}</td>
+                    <td className="py-3 text-muted-foreground">{new Date(sub.submittedAt).toLocaleDateString()}</td>
                     <td className="py-3">
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setSelectedSub(sub)}
+                        onClick={() => setSelectedSub(sub as any)}
                         className="text-primary hover:bg-primary/10"
                       >
                         <Eye className="w-4 h-4 mr-1" /> View
@@ -206,6 +280,11 @@ export default function TeacherDashboard() {
               })}
             </tbody>
           </table>
+          {sectionSubmissions.length === 0 && (
+            <div className="text-center py-8 text-muted-foreground">
+              No submissions yet
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

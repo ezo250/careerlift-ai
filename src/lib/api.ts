@@ -136,6 +136,11 @@ class ApiClient {
     return this.request(`/submissions/top-candidates?${params}`);
   }
 
+  // Users
+  async getUsers() {
+    return this.request('/users');
+  }
+
   // Checklists
   async getChecklists() {
     return this.request('/checklists');
