@@ -1,0 +1,10 @@
+<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blue left arrow -->
+  <polygon points="105,175 245,175 245,300 320,240 245,180 245,300 105,300" fill="#003D7A"/>
+  
+  <!-- Green right arrow -->
+  <polygon points="255,175 395,175 395,300 470,240 395,180 395,300 255,300" fill="#2DB76F"/>
+  
+  <!-- Text: Kepler College -->
+  <text x="300" y="400" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#003D7A" text-anchor="middle">Kepler College</text>
+</svg>

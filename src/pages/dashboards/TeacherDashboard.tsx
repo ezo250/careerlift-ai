@@ -72,12 +72,23 @@ export default function TeacherDashboard() {
     loadData();
   }, []);
 
-  const assignedSections = sections.filter(s => user?.assignedSections?.includes(s._id));
-  const sectionStudents = students.filter(u => user?.assignedSections?.includes(u.sectionId));
-  const sectionJobs = jobs.filter(j => user?.assignedSections?.includes(j.sectionId));
+  // Convert assigned section IDs to strings for comparison
+  const assignedSectionIds = user?.assignedSections?.map((s: any) => s._id?.toString() || s.toString()) || [];
+
+  const assignedSections = sections.filter(s => assignedSectionIds.includes(s._id?.toString() || s._id));
+  const sectionStudents = students.filter(u => {
+    const studentSectionId = u.sectionId?._id?.toString() || u.sectionId?.toString() || u.sectionId;
+    return assignedSectionIds.some(id => id === studentSectionId);
+  });
+  const sectionJobs = jobs.filter(j => {
+    const jobSectionId = j.sectionId?._id?.toString() || j.sectionId?.toString() || j.sectionId;
+    return assignedSectionIds.some(id => id === jobSectionId);
+  });
   const sectionSubmissions = submissions.filter(sub => {
     const student = students.find(u => u._id === sub.studentId);
-    return student && user?.assignedSections?.includes(student.sectionId);
+    if (!student) return false;
+    const studentSectionId = student.sectionId?._id?.toString() || student.sectionId?.toString() || student.sectionId;
+    return assignedSectionIds.some(id => id === studentSectionId);
   });
 
   const avgScore = sectionSubmissions.length

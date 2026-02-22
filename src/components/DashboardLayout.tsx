@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6 border-b border-slate-200 dark:border-slate-800">
-        <img src="/logo.png" alt="Kepler" className="h-10 drop-shadow-md" />
+        <img src="/logo.svg" alt="Kepler" className="h-10 drop-shadow-md" />
         <div>
           <div className="font-display font-bold text-foreground text-base">CareerLift</div>
           <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${roleColor} text-white mt-0.5 shadow-sm`}>
