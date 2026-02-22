@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Briefcase, Calendar, Users, Edit, Trash2 } from 'lucide-react';
+import { Plus, Briefcase, Calendar, Users, Eye, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
@@ -12,6 +12,7 @@ export default function JobsPage() {
   const [checklists, setChecklists] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [viewJob, setViewJob] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: '',
     company: '',
@@ -261,8 +262,15 @@ export default function JobsPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => toggleStatus(job)}
+                  onClick={() => setViewJob(job)}
                   className="flex-1"
+                >
+                  <Eye className="w-4 h-4 mr-1" /> View Details
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toggleStatus(job)}
                 >
                   {job.status === 'active' ? 'Close' : 'Activate'}
                 </Button>
@@ -277,6 +285,98 @@ export default function JobsPage() {
           <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
           <p className="text-muted-foreground">No jobs yet. Create your first job opportunity above.</p>
         </div>
+      )}
+
+      {/* View Job Modal */}
+      {viewJob && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setViewJob(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-xl p-6 max-w-2xl w-full border border-border shadow-lg max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h3 className="font-display text-2xl font-bold text-foreground">{viewJob.title}</h3>
+                <p className="text-muted-foreground">{viewJob.company}</p>
+              </div>
+              <button
+                onClick={() => setViewJob(null)}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Status</h4>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  viewJob.status === 'active' 
+                    ? 'bg-secondary/10 text-secondary' 
+                    : 'bg-muted text-muted-foreground'
+                }`}>
+                  {viewJob.status}
+                </span>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Job Description</h4>
+                <p className="text-muted-foreground whitespace-pre-wrap">{viewJob.description}</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Section</h4>
+                  <p className="text-muted-foreground">
+                    {sections.find(s => s._id === viewJob.sectionId?._id || s._id === viewJob.sectionId)?.name || 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Deadline</h4>
+                  <p className="text-muted-foreground">{new Date(viewJob.deadline).toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Max Submissions</h4>
+                  <p className="text-muted-foreground">{viewJob.maxSubmissions} per student</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Checklist</h4>
+                  <p className="text-muted-foreground">
+                    {checklists.find(c => c._id === viewJob.checklistId?._id || c._id === viewJob.checklistId)?.name || 'N/A'}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-foreground mb-2">Created</h4>
+                <p className="text-muted-foreground">{new Date(viewJob.createdAt).toLocaleString()}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <Button
+                onClick={() => toggleStatus(viewJob)}
+                variant="outline"
+                className="flex-1"
+              >
+                {viewJob.status === 'active' ? 'Close Job' : 'Activate Job'}
+              </Button>
+              <Button onClick={() => setViewJob(null)} className="flex-1">
+                Close
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
