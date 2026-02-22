@@ -68,7 +68,7 @@ export default function Login() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-8"
           >
-            <img src="/logo.svg" alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
+            <img src="/logo.jpg" alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
           </motion.div>
           
           <motion.div
@@ -106,7 +106,7 @@ export default function Login() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 text-center">
-            <img src="/logo.svg" alt="Kepler College" className="h-16 mx-auto mb-4" />
+            <img src="/logo.jpg" alt="Kepler College" className="h-16 mx-auto mb-4" />
             <h2 className="font-display text-2xl font-bold text-foreground">Kepler CareerLift</h2>
           </div>
 
