@@ -176,28 +176,26 @@ RETURN ONLY VALID JSON (no markdown, no code blocks):
 
     let parsedResponse;
     try {
-      let responseText = '';
-      
-      if (typeof response === 'object' && response !== null) {
-        responseText = response.message || response.content || response.text || '';
-        if (!responseText) {
-          responseText = JSON.stringify(response);
+      // If response is already a valid object with grades, use it directly
+      if (typeof response === 'object' && response !== null && response.grades) {
+        parsedResponse = response;
+      } else if (typeof response === 'object' && response !== null) {
+        // Try to extract text content
+        const textContent = response.message || response.content || response.text;
+        if (textContent && typeof textContent === 'string') {
+          const cleaned = textContent.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+          const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+          parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
+        } else {
+          throw new Error('Response object does not contain valid data');
         }
       } else if (typeof response === 'string') {
-        responseText = response;
+        const cleaned = response.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+        parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
       } else {
         throw new Error('Invalid response type');
       }
-      
-      // Ensure we have a string
-      if (typeof responseText !== 'string') {
-        responseText = String(responseText);
-      }
-      
-      // Clean and parse
-      responseText = responseText.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
-      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
       
       // Validation - if no grades, create default structure
       if (!parsedResponse.grades || !Array.isArray(parsedResponse.grades)) {
@@ -277,10 +275,24 @@ RETURN ONLY VALID JSON (no markdown, no code blocks):
         };
       }
       
-      // Calculate overall score
-      const overallScore = parsedResponse.grades.length > 0
-        ? Math.round(parsedResponse.grades.reduce((sum: number, g: any) => sum + (g.score || 0), 0) / parsedResponse.grades.length)
-        : 70;
+      // Calculate overall score from grades with weights
+      let overallScore = 70;
+      if (parsedResponse.grades && parsedResponse.grades.length > 0) {
+        const totalWeight = checklist.criteria.reduce((sum: number, c: any) => sum + (c.weight || 0), 0);
+        if (totalWeight > 0) {
+          overallScore = Math.round(
+            parsedResponse.grades.reduce((sum: number, grade: any, index: number) => {
+              const criterion = checklist.criteria[index];
+              const weight = criterion ? (criterion.weight || 0) / totalWeight : 0;
+              return sum + (grade.percentage || grade.score || 0) * weight;
+            }, 0)
+          );
+        } else {
+          overallScore = Math.round(
+            parsedResponse.grades.reduce((sum: number, g: any) => sum + (g.percentage || g.score || 0), 0) / parsedResponse.grades.length
+          );
+        }
+      }
 
       return {
         ...parsedResponse,
