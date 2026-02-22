@@ -174,34 +174,22 @@ RETURN ONLY VALID JSON (no markdown, no code blocks):
 
     console.log('✅ AI ANALYSIS COMPLETE');
     console.log('Response type:', typeof response);
-    console.log('Response keys:', response ? Object.keys(response) : 'null');
-    console.log('Response:', JSON.stringify(response, null, 2));
+    console.log('Response:', response);
 
     let parsedResponse;
     try {
-      // If response is already a valid object with grades, use it directly
-      if (typeof response === 'object' && response !== null && response.grades) {
-        console.log('Using response directly (has grades)');
-        parsedResponse = response;
-      } else if (typeof response === 'object' && response !== null) {
-        console.log('Response is object, extracting text content');
-        // Try to extract text content
-        const textContent = response.message || response.content || response.text;
-        console.log('Text content:', textContent);
-        if (textContent && typeof textContent === 'string') {
-          const cleaned = textContent.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
-          const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-          parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
-        } else {
-          throw new Error('Response object does not contain valid text data');
-        }
-      } else if (typeof response === 'string') {
-        console.log('Response is string, parsing');
-        const cleaned = response.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
-        const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-        parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);
+      // Puter.ai.chat returns a plain string
+      let responseText = String(response);
+      
+      // Clean markdown formatting
+      responseText = responseText.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+      
+      // Extract JSON from response
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedResponse = JSON.parse(jsonMatch[0]);
       } else {
-        throw new Error('Invalid response type: ' + typeof response);
+        parsedResponse = JSON.parse(responseText);
       }
       
       // Validation - if no grades, create default structure
