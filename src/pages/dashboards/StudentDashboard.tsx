@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, FileText, BarChart3, Upload, Clock, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Briefcase, FileText, BarChart3, Upload, Clock, CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import SubmissionDetail from '@/components/SubmissionDetail';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 export default function StudentDashboard() {
   const { user } = useAuth();
   const [selectedSub, setSelectedSub] = useState<any>(null);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
   const [showSubmitModal, setShowSubmitModal] = useState<string | null>(null);
   const [jobs, setJobs] = useState<any[]>([]);
   const [submissions, setSubmissions] = useState<any[]>([]);
@@ -202,17 +203,25 @@ export default function StudentDashboard() {
                 )}
 
                 <div className="flex gap-2">
+                  <Button
+                    onClick={() => setSelectedJob(job)}
+                    variant="outline"
+                    className="flex-1 border-border"
+                    size="sm"
+                  >
+                    Read More
+                  </Button>
                   {remaining > 0 ? (
                     <Button
                       onClick={() => setShowSubmitModal(job._id)}
                       className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                       size="sm"
                     >
-                      <Upload className="w-4 h-4 mr-2" /> Submit Documents
+                      <Upload className="w-4 h-4 mr-2" /> Submit
                     </Button>
                   ) : (
                     <div className="flex-1 text-center text-xs text-muted-foreground py-2">
-                      <AlertCircle className="w-4 h-4 inline mr-1" /> No submissions remaining
+                      <AlertCircle className="w-4 h-4 inline mr-1" /> No submissions
                     </div>
                   )}
                 </div>
@@ -226,6 +235,117 @@ export default function StudentDashboard() {
           </div>
         )}
       </motion.div>
+
+      {/* Job Details Modal */}
+      {selectedJob && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setSelectedJob(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-2xl max-w-2xl w-full border border-border shadow-2xl overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 border-b border-border flex items-start justify-between">
+              <div className="flex-1">
+                <h2 className="font-display text-2xl font-bold text-foreground mb-2">{selectedJob.title}</h2>
+                <p className="text-lg text-muted-foreground">{selectedJob.company}</p>
+              </div>
+              <button
+                onClick={() => setSelectedJob(null)}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="overflow-y-auto max-h-[60vh] p-6 space-y-6">
+              {/* Status and Deadline */}
+              <div className="flex flex-wrap gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-1">Status</p>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    selectedJob.status === 'active' ? 'bg-secondary/10 text-secondary' : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {selectedJob.status}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-1">Deadline</p>
+                  <p className="text-sm font-medium text-foreground">{new Date(selectedJob.deadline).toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  })}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-1">Max Submissions</p>
+                  <p className="text-sm font-medium text-foreground">{selectedJob.maxSubmissions}</p>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <h3 className="font-display font-semibold text-foreground mb-3">Job Description</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{selectedJob.description}</p>
+              </div>
+
+              {/* Submission History for this job */}
+              {submissions.filter(s => (s.jobId?._id || s.jobId) === selectedJob._id).length > 0 && (
+                <div>
+                  <h3 className="font-display font-semibold text-foreground mb-3">Your Submissions</h3>
+                  <div className="space-y-2">
+                    {submissions.filter(s => (s.jobId?._id || s.jobId) === selectedJob._id).map(sub => (
+                      <div key={sub._id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+                        <div>
+                          <p className="text-sm font-medium text-foreground">Submission #{sub.submissionNumber}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(sub.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                          sub.overallScore >= 80 ? 'bg-secondary/10 text-secondary' :
+                          sub.overallScore >= 60 ? 'bg-kepler-gold/10 text-kepler-gold' :
+                          'bg-destructive/10 text-destructive'
+                        }`}>
+                          {sub.overallScore}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="bg-muted/30 border-t border-border p-6 flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1 border-border"
+                onClick={() => setSelectedJob(null)}
+              >
+                Close
+              </Button>
+              {submissions.filter(s => (s.jobId?._id || s.jobId) === selectedJob._id).length < selectedJob.maxSubmissions && (
+                <Button
+                  className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => {
+                    setShowSubmitModal(selectedJob._id);
+                    setSelectedJob(null);
+                  }}
+                >
+                  <Upload className="w-4 h-4 mr-2" /> Submit Documents
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Submit modal */}
       {showSubmitModal && (
