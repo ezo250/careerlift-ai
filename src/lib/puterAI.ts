@@ -227,21 +227,28 @@ Respond ONLY with valid JSON (no markdown, no code blocks):`;
     // Ultra-robust JSON parsing
     let parsedResponse;
     try {
-      let cleanedResponse = response.trim();
-      
-      // Remove markdown
-      cleanedResponse = cleanedResponse
-        .replace(/```json\n?/gi, '')
-        .replace(/```\n?/g, '')
-        .replace(/^`|`$/g, '')
-        .trim();
-      
-      // Extract JSON
-      const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsedResponse = JSON.parse(jsonMatch[0]);
+      // Check if response is already an object
+      if (typeof response === 'object' && response !== null) {
+        parsedResponse = response;
+      } else if (typeof response === 'string') {
+        let cleanedResponse = response.trim();
+        
+        // Remove markdown
+        cleanedResponse = cleanedResponse
+          .replace(/```json\n?/gi, '')
+          .replace(/```\n?/g, '')
+          .replace(/^`|`$/g, '')
+          .trim();
+        
+        // Extract JSON
+        const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedResponse = JSON.parse(jsonMatch[0]);
+        } else {
+          parsedResponse = JSON.parse(cleanedResponse);
+        }
       } else {
-        parsedResponse = JSON.parse(cleanedResponse);
+        throw new Error('Invalid response type from AI');
       }
       
       // Validation
