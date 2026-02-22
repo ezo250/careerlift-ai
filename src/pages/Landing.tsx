@@ -31,7 +31,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-        const logoUrl = `${import.meta.env.BASE_URL}logo.png`;
       {/* Nav */}
       <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto flex items-center justify-between h-16 px-4">
@@ -39,7 +38,7 @@ export default function Landing() {
             <img src="/logo.png" alt="Kepler" className="h-10 w-auto" />
             <span className="font-display text-xl font-bold text-foreground">CareerLift</span>
           </Link>
-                    <img src={logoUrl} alt="Kepler" className="h-10 w-auto" />
+          <div className="flex items-center gap-3">
             <Link to="/login">
               <Button variant="ghost" className="font-medium">Log In</Button>
             </Link>
@@ -122,7 +121,7 @@ export default function Landing() {
             <img src="/logo.png" alt="Kepler" className="h-8 w-auto" />
             <span className="font-display font-bold text-foreground">CareerLift</span>
           </div>
-                    <img src={logoUrl} alt="Kepler" className="h-8 w-auto" />
+          <p className="text-sm text-muted-foreground"> 2026 Kepler College. All rights reserved. | Developed by Amani Alain</p>
         </div>
       </footer>
     </div>
