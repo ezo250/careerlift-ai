@@ -4,8 +4,18 @@ import { auth, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all sections
-router.get('/', auth, async (req, res) => {
+// Get all sections (public for signup)
+router.get('/', async (req, res) => {
+  try {
+    const sections = await Section.find().select('name').sort('name');
+    res.json(sections);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get sections with details (authenticated)
+router.get('/details', auth, async (req, res) => {
   try {
     const sections = await Section.find().populate('assignedTeachers', 'name email');
     res.json(sections);

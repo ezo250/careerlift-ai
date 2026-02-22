@@ -20,7 +20,7 @@ export default function SectionsPage() {
   const loadData = async () => {
     try {
       const [sectionsData, usersData] = await Promise.all([
-        api.getSections(),
+        api.getSectionsDetailed(),
         api.request('/users')
       ]);
       setSections(sectionsData);

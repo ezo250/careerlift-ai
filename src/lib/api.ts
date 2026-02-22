@@ -77,6 +77,10 @@ class ApiClient {
     return this.request('/sections');
   }
 
+  async getSectionsDetailed() {
+    return this.request('/sections/details');
+  }
+
   async createSection(data: any) {
     return this.request('/sections', {
       method: 'POST',
