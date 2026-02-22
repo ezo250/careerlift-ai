@@ -5,6 +5,8 @@ import { Eye, EyeOff, LogIn, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
+const logoUrl = `${import.meta.env.BASE_URL}logo.png`;
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -68,7 +70,7 @@ export default function Login() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-8"
           >
-            <img src="/logo.png" alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
+            <img src={logoUrl} alt="Kepler College" className="h-24 mx-auto drop-shadow-2xl" />
           </motion.div>
           
           <motion.div
@@ -106,7 +108,7 @@ export default function Login() {
         >
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 text-center">
-            <img src="/logo.png" alt="Kepler College" className="h-16 mx-auto mb-4" />
+            <img src={logoUrl} alt="Kepler College" className="h-16 mx-auto mb-4" />
             <h2 className="font-display text-2xl font-bold text-foreground">Kepler CareerLift</h2>
           </div>
 
