@@ -318,7 +318,7 @@ Respond ONLY with valid JSON (no markdown, no code blocks):`;
         overallScore
       };
     } catch (parseError) {
-      console.error('Parse error:', parseError, 'Raw response:', response.substring(0, 200));
+      console.error('Parse error:', parseError, 'Raw response type:', typeof response, 'Response:', response);
       throw new Error(`Failed to parse AI analysis: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
     }
   } catch (error: any) {
