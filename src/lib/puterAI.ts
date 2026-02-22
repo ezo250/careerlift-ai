@@ -67,7 +67,6 @@ export const gradeDocument = async (
   checklist: any,
   jobDescription: string
 ): Promise<GradeResult> => {
-  // Initialize Puter instantly (no authentication required)
   await initializePuter();
 
   if (!window.puter) {
@@ -75,191 +74,120 @@ export const gradeDocument = async (
   }
 
   const criteriaText = checklist.criteria.map((c: any) => 
-    `- ${c.name} (Weight: ${c.weight}%): ${c.description}`
+    `${c.name} (${c.weight}% weight): ${c.description}`
   ).join('\n');
 
-  // ULTRA-ADVANCED AI PROMPT - EXCEEDS ChatGPT-5 CAPABILITIES
-  const systemContext = `You are an ELITE career strategist and document analyst with SUPERHUMAN expertise:
+  const prompt = `You are an ELITE HR professional and career coach with 20+ years of experience at Fortune 500 companies.
 
-⚡ SUPERHUMAN CREDENTIALS:
-- 30+ years at Fortune 50 tech & finance firms (Google, Amazon, Microsoft, McKinsey, Goldman Sachs)
-- 5x Certified Professional Resume Writer (CPRW)
-- Former VP of Talent Acquisition for FAANG companies
-- PhD in Organizational Psychology + Data Science
-- Author of 3 bestselling career books, 50+ peer-reviewed publications
-- Trains Fortune 100 HR departments on hiring optimization
-- Built ML models that predict hiring success with 94% accuracy
-- Expert in 150+ industries and 1000+ job types
-- ATS master - reverse-engineered algorithms from all major systems
-- AI ethics certified - ensures fair, unbiased evaluation
-
-🧠 SUPERHUMAN ANALYSIS CAPABILITIES:
-1. **Neural-level content analysis**: Understand subtext, implications, competitive advantage
-2. **Pattern recognition**: Identify hidden strengths & gaps humans miss
-3. **Predictive assessment**: Predict hiring probability with data science methods
-4. **Industry benchmarking**: Compare against top 1% of candidates for each field
-5. **Micro-keyword optimization**: Identify missing keywords worth +5-15 ATS points each
-6. **Narrative coherence**: Analyze career storytelling effectiveness
-7. **Cultural fit detection**: Assess alignment with company DNA beyond job requirements
-8. **Compensation negotiations**: Estimate salary impact of document quality
-9. **Career trajectory analysis**: Evaluate growth potential and advancement readiness
-10. **Psychological impact assessment**: Understand how document affects recruiter emotions
-
-🎯 QUANTUM-LEAP EVALUATION STANDARDS:
-You grade with SURGICAL PRECISION and BRUTAL HONESTY. Every score is:
-- Data-driven (backed by hiring success metrics)
-- Benchmark-calibrated (compared to top candidates)
-- Actionable (includes specific, implementable fixes)
-- Predictive (includes success probability)
-- Competitive (ranked against market standards)`;
-
-  const analysisPrompt = `${systemContext}
-
-ULTIMATE MISSION: Conduct EXHAUSTIVE, MULTI-DIMENSIONAL, QUANTUM-LEVEL analysis leaving NO detail overlooked.
+Your mission: Analyze this student's job application documents with BRUTAL HONESTY and SURGICAL PRECISION.
 
 ═══════════════════════════════════════════════════════════════
-GRADING CRITERIA (Weight-based scoring):
-${criteriaText}
-
-TARGET POSITION ANALYSIS:
+JOB DESCRIPTION:
 ${jobDescription}
 
-CANDIDATE SUBMISSION:
+═══════════════════════════════════════════════════════════════
+STUDENT'S DOCUMENTS:
 ${documentText}
+
+═══════════════════════════════════════════════════════════════
+GRADING CHECKLIST (evaluate each criterion):
+${criteriaText}
+
 ═══════════════════════════════════════════════════════════════
 
-SUPERHUMAN ANALYSIS FRAMEWORK:
+YOUR ANALYSIS MUST:
 
-📋 CONTENT ARCHITECTURE:
-- Keyword density vs. TF-IDF scoring for optimal ATS performance
-- Achievement quantification: numbers, percentages, ROI, metrics
-- Impact-to-word-ratio: efficiency of value communication
-- Technical terminology: precision and industry alignment
-- Narrative flow: storytelling effectiveness and engagement
-- Differentiation factors: what makes this candidate unique
+1. EXTRACT & COMPARE:
+   - Extract ALL skills from job description
+   - Extract ALL skills mentioned in student documents
+   - Calculate exact skill match percentage
+   - Identify missing critical skills
 
-🎯 STRATEGIC POSITIONING:
-- Competitive advantage vs. typical candidates
-- Salary/role negotiation power indicators
-- Advancement potential indicators
-- Skills transferonomy analysis
-- Industry-specific value propositions
-- Market demand alignment
+2. STRUCTURAL ANALYSIS:
+   - Check document formatting and organization
+   - Verify all required sections exist
+   - Assess professional presentation
 
-🤖 PREDICTIVE ATS ANALYSIS:
-- Keyword density for each critical skill (+% lift per addition)
-- Parser compatibility (avoid formatting disasters)
-- Section optimization for scanning algorithms
-- Hidden keyword opportunities (worth +5-15 ATS points)
-- File format/structure score impact
-- Estimated resume screening score (0-100)
+3. SEMANTIC MATCHING:
+   - Don't just match keywords - understand CONTEXT
+   - "Group projects" = teamwork
+   - "Presented reports" = communication
+   - "Excel" = data analysis tools
 
-💼 HIRING PSYCHOLOGY:
-- Recruiter emotion triggers (positive & negative)
-- Unconscious bias vulnerabilities
-- Confidence signal indicators
-- Leadership presence indicators
-- Team collaboration evidence
-- Innovation/initiative markers
+4. QUALITY EVALUATION:
+   - Are achievements MEASURABLE? (numbers, %, $)
+   - Are action verbs used? (Led, Managed, Increased)
+   - Is there IMPACT? ("increased sales by 25%" vs "worked on sales")
+   - Is cover letter PERSONALIZED to this job?
+   - Is tone professional?
 
-🏆 COMPETITIVE INTELLIGENCE:
-- Percentile ranking among all candidates
-- Top 10% vs median candidate comparison
-- Market salary implications
-- Career progression readiness
-- Advancement probability within 2 years
-- Executive potential indicators
+5. SCORING LOGIC:
+   - Score 90-100: Exceptional - matches 90%+ of requirements, measurable achievements, perfect formatting
+   - Score 80-89: Very Good - matches 75%+ requirements, good achievements, minor improvements needed
+   - Score 70-79: Good - matches 60%+ requirements, some achievements, needs improvement
+   - Score 60-69: Acceptable - matches 50%+ requirements, weak achievements, major improvements needed
+   - Score 50-59: Poor - matches <50% requirements, no measurable achievements, significant issues
+   - Score <50: Failing - does not meet basic requirements
 
-FOR EACH CRITERION - PROVIDE:
-
-1. PRECISE SCORE (0-100): Based on ALL factors above
-2. EXACTLOCATIONS: Surgical pinpointing with line numbers/quotes
-3. DETAILED FEEDBACK (7-10 sentences): 
-   - Specific document quotes
-   - Benchmark comparisons
-   - Hiring impact assessment
-4. ACTIONABLE SUGGESTIONS (8-10 items):
-   - WHAT fix needed
-   - WHERE in document
-   - HOW to implement (with example)
-   - WHY it matters (impact on evaluation)
-   - ESTIMATED VALUE (+X ATS points/hiring probability)
-5. SEVERITY: critical|major|minor
-6. BENCHMARK: Show how candidate compares to top 1%, median, bottom 10%
-
-SUPERHUMAN SCORING CALIBRATION:
-- 98-100%: EXCEPTIONAL - Top 0.1%, immediate interview, executive track
-- 94-97%: OUTSTANDING - Top 1%, competitive for senior roles
-- 89-93%: EXCELLENT - Top 5%, ready for advancement
-- 84-88%: VERY GOOD - Top 15%, solid candidate
-- 79-83%: GOOD - Top 30%, meets requirements  
-- 74-78%: ABOVE AVERAGE - Top 50%, improve to compete
-- 69-73%: AVERAGE - Meets minimums, significant gaps
-- 60-68%: BELOW AVERAGE - Major revision needed
-- Below 60%: POOR - Complete rewrite required
-
-DOCUMENT ANALYSIS - INCLUDE:
-1. TOP 5 QUANTUM-LEVEL STRENGTHS (with hiring impact)
-2. TOP 5 CRITICAL ISSUES (with fix priority & value)
-3. COMPETITIVE PERCENTILE: 99th=top 1%, 50th=median, etc.
-4. ATS SCORE: 0-100 with specific keyword recommendations
-5. HIRING PROBABILITY: % chance of interview callback
-6. INTERVIEW QUALITY SCORE: How well will candidate perform in interview
-7. SALARY NEGOTIATION POWER: Estimated impact on compensation
-8. ADVANCEMENT READINESS: Likelihood of promotion within 2 years
-9. TOP 10 PRIORITY FIXES (ranked by ROI)
-10. 90-DAY IMPROVEMENT ROADMAP
-
-Respond ONLY with valid JSON (no markdown, no code blocks):`;
+RETURN ONLY VALID JSON (no markdown, no code blocks):
+{
+  "grades": [
+    {
+      "criterionId": "criterion_id_here",
+      "criterionName": "Criterion Name",
+      "score": 85,
+      "maxScore": 100,
+      "percentage": 85,
+      "feedback": "Detailed explanation of WHY this score (7-10 sentences). Reference SPECIFIC parts of the document. Compare to job requirements. Explain what's good and what's missing.",
+      "suggestions": [
+        "Specific action 1: Add quantifiable metrics (e.g., 'Increased team productivity by 30%')",
+        "Specific action 2: Include missing skill from job description: [skill name]",
+        "Specific action 3: Improve formatting in [section name]",
+        "Specific action 4: Add action verb to achievement in [location]"
+      ],
+      "exactLocations": [
+        "Resume > Experience section > Second bullet point",
+        "Cover Letter > Paragraph 2"
+      ],
+      "severity": "major"
+    }
+  ],
+  "aiFeedback": "Overall assessment (10+ sentences): Summarize document quality, job alignment, key strengths, critical weaknesses, and hiring probability.",
+  "documentAnalysis": {
+    "strengths": ["Specific strength 1 with evidence", "Specific strength 2 with evidence"],
+    "criticalIssues": ["Critical issue 1 with location", "Critical issue 2 with location"],
+    "competitivePositioning": "How this candidate compares to typical applicants",
+    "atsCompatibility": 75,
+    "interviewProbability": 65,
+    "recommendedActions": ["Priority action 1", "Priority action 2", "Priority action 3"]
+  }
+}`;
 
   try {
-    console.log('🚀 QUANTUM AI ANALYSIS: Initiating superhuman-level document analysis...');
+    console.log('🚀 AI ANALYSIS: Starting intelligent document evaluation...');
     
-    // ULTIMATE ADVANCED MODEL - Better than any GPT-5 variant
-    const response = await window.puter.ai.chat(analysisPrompt, {
-      model: 'gpt-4o', // Using reliable model
-      temperature: 0.3,
+    const response = await window.puter.ai.chat(prompt, {
+      model: 'gpt-4o',
+      temperature: 0.2,
       max_tokens: 4000
     });
 
-    console.log('✅ QUANTUM AI ANALYSIS COMPLETE', response);
+    console.log('✅ AI ANALYSIS COMPLETE', response);
 
-    // Ultra-robust JSON parsing
     let parsedResponse;
     try {
-      // Check if response is already an object
+      let responseText = '';
+      
       if (typeof response === 'object' && response !== null) {
-        // Puter may return response in different formats
-        if (response.message || response.content || response.text) {
-          const textContent = response.message || response.content || response.text;
-          if (typeof textContent === 'string') {
-            parsedResponse = JSON.parse(textContent.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim());
-          } else {
-            parsedResponse = response;
-          }
-        } else {
-          parsedResponse = response;
-        }
+        responseText = response.message || response.content || response.text || JSON.stringify(response);
       } else if (typeof response === 'string') {
-        let cleanedResponse = response.trim();
-        
-        // Remove markdown
-        cleanedResponse = cleanedResponse
-          .replace(/```json\n?/gi, '')
-          .replace(/```\n?/g, '')
-          .replace(/^`|`$/g, '')
-          .trim();
-        
-        // Extract JSON
-        const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          parsedResponse = JSON.parse(jsonMatch[0]);
-        } else {
-          parsedResponse = JSON.parse(cleanedResponse);
-        }
-      } else {
-        throw new Error('Invalid response type from AI');
+        responseText = response;
       }
+      
+      // Clean and parse
+      responseText = responseText.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      parsedResponse = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(responseText);
       
       // Validation - if no grades, create default structure
       if (!parsedResponse.grades || !Array.isArray(parsedResponse.grades)) {
