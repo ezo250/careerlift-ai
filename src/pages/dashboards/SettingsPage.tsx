@@ -20,6 +20,10 @@ export default function SettingsPage() {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.id) {
+      toast.error('User not found');
+      return;
+    }
     setLoading(true);
     try {
       const updates: any = {};
@@ -31,7 +35,7 @@ export default function SettingsPage() {
         updates.profilePicture = profilePicture;
       }
       
-      const updated = await api.updateUser(user!._id, updates);
+      const updated = await api.updateUser(user.id, updates);
       setUser({ ...user, ...updated });
       toast.success('Profile updated successfully');
     } catch (error: any) {
