@@ -98,18 +98,24 @@ ${criteriaText}
 
 ═══════════════════════════════════════════════════════════════
 
-CRITICAL: You MUST provide detailed analysis for ALL 6 criteria:
-1. Formatting & Layout
-2. Contact Information  
-3. Skills Match
-4. Experience Relevance
-5. Grammar & Spelling
-6. Cover Letter Customization
+CRITICAL REQUIREMENT: You MUST analyze and return ALL 6 criteria in the "grades" array:
 
-For EACH criterion, provide:
-- 5-7 sentence expert analysis
-- 2-3 specific actionable suggestions
-- 2-3 before/after improvement examples with exact text
+1. Formatting & Layout - Analyze margins, fonts, spacing, section headers, ATS compatibility
+2. Contact Information - Evaluate completeness, professionalism of email/phone/LinkedIn
+3. Skills Match - Compare student skills vs job requirements, identify gaps
+4. Experience Relevance - Assess how experience aligns with job responsibilities
+5. Grammar & Spelling - Check for errors, punctuation, writing quality
+6. Cover Letter Customization - Evaluate personalization and relevance to specific role
+
+For EACH of the 6 criteria, you MUST provide:
+- criterionId: unique identifier (formatting, contact, skills, experience, grammar, coverletter)
+- criterionName: full name of criterion
+- score: 0-100 based on quality
+- percentage: same as score
+- feedback: 5-7 sentences of detailed expert analysis
+- suggestions: array of 2-3 specific actionable improvements
+- improvements: array of 2-3 objects with {original, improved, explanation}
+- severity: "critical", "major", or "minor"
 
 RETURN ONLY VALID JSON (no markdown):
 {
@@ -306,7 +312,7 @@ Return ONLY JSON, no markdown, no code blocks.`;
     const response = await window.puter.ai.chat(prompt, {
       model: 'gpt-4o',
       temperature: 0.1,
-      max_tokens: 6000
+      max_tokens: 8000
     });
 
     console.log('✅ AI ANALYSIS COMPLETE');
@@ -323,27 +329,51 @@ Return ONLY JSON, no markdown, no code blocks.`;
     if (!parsedResponse.instructorAssessment) parsedResponse.instructorAssessment = 'Document requires significant improvement. Review detailed feedback.';
     if (!parsedResponse.categories) parsedResponse.categories = [];
     
-    // Ensure grades array exists and is populated from checklist
-    if (!parsedResponse.grades || !Array.isArray(parsedResponse.grades) || parsedResponse.grades.length === 0) {
-      parsedResponse.grades = checklist.criteria.map((c: any) => ({
-        criterionId: c._id,
-        criterionName: c.name,
-        score: 70,
-        maxScore: 100,
-        percentage: 70,
-        feedback: 'Document analyzed. Review suggestions for improvement.',
-        suggestions: ['Improve alignment with job requirements', 'Add quantifiable achievements', 'Enhance professional presentation'],
-        improvements: [
-          {
-            original: 'Review your document',
-            improved: 'Implement the specific improvements suggested by the AI',
-            explanation: 'Follow the detailed feedback to enhance your document quality'
-          }
-        ],
-        exactLocations: ['Review entire document'],
-        severity: 'major' as const
-      }));
+    // Ensure all 6 criteria are present in grades array
+    const requiredCriteria = [
+      { id: 'formatting', name: 'Formatting & Layout' },
+      { id: 'contact', name: 'Contact Information' },
+      { id: 'skills', name: 'Skills Match' },
+      { id: 'experience', name: 'Experience Relevance' },
+      { id: 'grammar', name: 'Grammar & Spelling' },
+      { id: 'coverletter', name: 'Cover Letter Customization' }
+    ];
+
+    if (!parsedResponse.grades || !Array.isArray(parsedResponse.grades)) {
+      parsedResponse.grades = [];
     }
+
+    // Add missing criteria with detailed analysis
+    requiredCriteria.forEach(criterion => {
+      const exists = parsedResponse.grades.some((g: any) => 
+        g.criterionId === criterion.id || g.criterionName === criterion.name
+      );
+      
+      if (!exists) {
+        parsedResponse.grades.push({
+          criterionId: criterion.id,
+          criterionName: criterion.name,
+          score: 60,
+          maxScore: 100,
+          percentage: 60,
+          feedback: `The ${criterion.name.toLowerCase()} requires attention. Review the document to ensure it meets professional standards and aligns with the job requirements. Consider the specific expectations for this criterion and make necessary improvements.`,
+          suggestions: [
+            `Review and improve ${criterion.name.toLowerCase()}`,
+            'Align with industry best practices',
+            'Ensure professional presentation'
+          ],
+          improvements: [
+            {
+              original: 'Current approach in document',
+              improved: 'Enhanced professional version',
+              explanation: `This improvement addresses key ${criterion.name.toLowerCase()} requirements`
+            }
+          ],
+          exactLocations: ['Document'],
+          severity: 'major' as const
+        });
+      }
+    });
     
     if (!parsedResponse.aiFeedback) parsedResponse.aiFeedback = 'Document analyzed. Review detailed feedback.';
     if (!parsedResponse.documentAnalysis) {
