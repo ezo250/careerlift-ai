@@ -133,6 +133,12 @@ class ApiClient {
     });
   }
 
+  async deleteSubmission(id: string) {
+    return this.request(`/submissions/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   async getTopCandidates(jobId: string, submissionNumber?: number, limit?: number) {
     const params = new URLSearchParams({ jobId });
     if (submissionNumber) params.append('submissionNumber', submissionNumber.toString());

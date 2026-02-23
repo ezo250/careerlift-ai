@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, Download, Filter } from 'lucide-react';
+import { Eye, Download, Filter, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
@@ -13,6 +13,7 @@ export default function GradesPage() {
   const [sections, setSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState<any>(null);
+  const [deleteSubmission, setDeleteSubmission] = useState<any>(null);
   // use special token for "all" to avoid empty-string SelectItem values
   const ALL_TOKEN = '__all__';
   const [filterSection, setFilterSection] = useState(ALL_TOKEN);
@@ -36,6 +37,17 @@ export default function GradesPage() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await api.deleteSubmission(deleteSubmission._id);
+      toast.success('Submission deleted successfully');
+      setDeleteSubmission(null);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -159,7 +171,7 @@ export default function GradesPage() {
                 <th className="pb-3 font-medium text-muted-foreground">#</th>
                 <th className="pb-3 font-medium text-muted-foreground">Score</th>
                 <th className="pb-3 font-medium text-muted-foreground">Date</th>
-                <th className="pb-3 font-medium text-muted-foreground">Action</th>
+                <th className="pb-3 font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -187,14 +199,22 @@ export default function GradesPage() {
                       {new Date(sub.createdAt).toLocaleDateString()}
                     </td>
                     <td className="py-3">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedSub(sub)}
-                        className="text-primary hover:bg-primary/10"
-                      >
-                        <Eye className="w-4 h-4 mr-1" /> View
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedSub(sub)}
+                          className="text-primary hover:bg-primary/10"
+                        >
+                          <Eye className="w-4 h-4 mr-1" /> View
+                        </Button>
+                        <button
+                          onClick={() => setDeleteSubmission(sub)}
+                          className="p-1.5 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -209,6 +229,47 @@ export default function GradesPage() {
           )}
         </div>
       </div>
+
+      {/* Delete Modal */}
+      {deleteSubmission && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setDeleteSubmission(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-xl p-6 max-w-md w-full border border-destructive shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-semibold text-destructive">Delete Submission</h3>
+              <button onClick={() => setDeleteSubmission(null)} className="p-2 hover:bg-muted rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="mb-6">
+              <p className="text-foreground mb-2">Are you sure you want to delete this submission?</p>
+              <div className="p-4 rounded-lg bg-muted/30 border border-border">
+                <p className="font-semibold text-foreground">{deleteSubmission.studentId?.name || 'Unknown'}</p>
+                <p className="text-sm text-muted-foreground">Submission #{deleteSubmission.submissionNumber}</p>
+                <p className="text-sm text-muted-foreground">Score: {deleteSubmission.overallScore}%</p>
+              </div>
+              <p className="text-sm text-destructive mt-3">This action cannot be undone. Teachers will no longer see this submission.</p>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setDeleteSubmission(null)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleDelete} className="flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete Submission
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }
