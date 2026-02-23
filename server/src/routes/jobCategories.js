@@ -23,6 +23,15 @@ router.post('/', auth, authorize('superadmin'), async (req, res) => {
   }
 });
 
+router.patch('/:id', auth, authorize('superadmin'), async (req, res) => {
+  try {
+    const category = await JobCategory.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(category);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.delete('/:id', auth, authorize('superadmin'), async (req, res) => {
   try {
     await JobCategory.findByIdAndDelete(req.params.id);

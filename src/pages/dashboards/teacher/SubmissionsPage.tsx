@@ -16,6 +16,7 @@ export default function SubmissionsPage() {
   const [selectedSub, setSelectedSub] = useState<any>(null);
   const [sortBy, setSortBy] = useState<string>('all');
   const [customLimit, setCustomLimit] = useState<string>('10');
+  const [selectedJob, setSelectedJob] = useState<string>('all');
 
   useEffect(() => {
     loadData();
@@ -55,9 +56,13 @@ export default function SubmissionsPage() {
     ? Math.round(submissions.reduce((sum, s) => sum + s.overallScore, 0) / submissions.length)
     : 0;
 
-  const sortedSubmissions = [...submissions].sort((a, b) => b.overallScore - a.overallScore);
-  const displayedSubmissions = sortBy === 'all' 
+  const filteredByJob = selectedJob === 'all' 
     ? submissions 
+    : submissions.filter(s => (s.jobId?._id || s.jobId) === selectedJob);
+
+  const sortedSubmissions = [...filteredByJob].sort((a, b) => b.overallScore - a.overallScore);
+  const displayedSubmissions = sortBy === 'all' 
+    ? filteredByJob 
     : sortBy === 'custom'
     ? sortedSubmissions.slice(0, parseInt(customLimit) || 10)
     : sortedSubmissions.slice(0, parseInt(sortBy));
@@ -138,6 +143,17 @@ export default function SubmissionsPage() {
           <h3 className="font-display font-semibold text-foreground">All Submissions</h3>
           <div className="flex items-center gap-3">
             <Filter className="w-4 h-4 text-muted-foreground" />
+            <Select value={selectedJob} onValueChange={setSelectedJob}>
+              <SelectTrigger className="w-48 h-9 rounded-xl">
+                <SelectValue placeholder="Filter by job..." />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="all">All Jobs</SelectItem>
+                {jobs.map(job => (
+                  <SelectItem key={job._id} value={job._id}>{job.title}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-40 h-9 rounded-xl">
                 <SelectValue placeholder="Sort by..." />

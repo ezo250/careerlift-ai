@@ -9,6 +9,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: '', description: '' });
 
   useEffect(() => {
@@ -26,13 +27,36 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.createJobCategory(formData);
-      toast.success('Category created successfully');
+      if (editingId) {
+        await api.updateJobCategory(editingId, formData);
+        toast.success('Category updated');
+      } else {
+        await api.createJobCategory(formData);
+        toast.success('Category created');
+      }
       setFormData({ name: '', description: '' });
       setShowCreate(false);
+      setEditingId(null);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleEdit = (category: any) => {
+    setFormData({ name: category.name, description: category.description || '' });
+    setEditingId(category._id);
+    setShowCreate(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this category?')) return;
+    try {
+      await api.deleteJobCategory(id);
+      toast.success('Category deleted');
       loadData();
     } catch (error: any) {
       toast.error(error.message);
@@ -54,7 +78,7 @@ export default function CategoriesPage() {
           <h1 className="font-display text-2xl lg:text-3xl font-bold text-foreground">Job Categories</h1>
           <p className="text-muted-foreground mt-1">Manage job categories for organization</p>
         </div>
-        <Button onClick={() => setShowCreate(!showCreate)} className="bg-primary text-primary-foreground">
+        <Button onClick={() => { setShowCreate(!showCreate); setEditingId(null); setFormData({ name: '', description: '' }); }} className="bg-primary text-primary-foreground">
           <Plus className="w-4 h-4 mr-2" /> Create Category
         </Button>
       </div>
@@ -65,8 +89,8 @@ export default function CategoriesPage() {
           animate={{ opacity: 1, height: 'auto' }}
           className="glass-card-elevated p-6"
         >
-          <h3 className="font-display font-semibold text-foreground mb-4">Create New Category</h3>
-          <form onSubmit={handleCreate} className="space-y-4">
+          <h3 className="font-display font-semibold text-foreground mb-4">{editingId ? 'Edit' : 'Create'} Category</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Category Name</label>
               <input
@@ -90,9 +114,9 @@ export default function CategoriesPage() {
             </div>
             <div className="flex gap-3">
               <Button type="submit" className="bg-primary text-primary-foreground">
-                Create Category
+                {editingId ? 'Update' : 'Create'} Category
               </Button>
-              <Button type="button" variant="outline" onClick={() => setShowCreate(false)}>
+              <Button type="button" variant="outline" onClick={() => { setShowCreate(false); setEditingId(null); setFormData({ name: '', description: '' }); }}>
                 Cancel
               </Button>
             </div>
@@ -120,6 +144,14 @@ export default function CategoriesPage() {
                     <p className="text-xs text-muted-foreground mt-1">{category.description}</p>
                   )}
                 </div>
+              </div>
+              <div className="flex gap-1">
+                <Button variant="ghost" size="sm" onClick={() => handleEdit(category)}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => handleDelete(category._id)}>
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </Button>
               </div>
             </div>
           </motion.div>

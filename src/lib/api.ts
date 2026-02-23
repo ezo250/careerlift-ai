@@ -132,6 +132,19 @@ class ApiClient {
     });
   }
 
+  async updateJobCategory(id: string, data: any) {
+    return this.request(`/job-categories/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteJobCategory(id: string) {
+    return this.request(`/job-categories/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Submissions
   async getSubmissions() {
     return this.request('/submissions');
