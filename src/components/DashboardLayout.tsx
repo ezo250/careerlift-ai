@@ -62,6 +62,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     try {
       const submissions = await api.getSubmissions();
       const recent = submissions
+        .filter((sub: any) => sub._id && sub.createdAt) // Filter out invalid submissions
         .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 10)
         .map((sub: any) => ({
@@ -73,6 +74,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       setNotifications(recent);
     } catch (error) {
       console.error('Failed to load notifications:', error);
+      setNotifications([]); // Set empty array on error
     }
   };
 
