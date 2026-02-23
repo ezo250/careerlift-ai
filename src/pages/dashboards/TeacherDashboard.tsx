@@ -32,7 +32,7 @@ interface Submission {
   jobId: string;
   overallScore: number;
   submissionNumber: number;
-  submittedAt: string;
+  createdAt: string;
   grades: Array<{
     criterionName: string;
     percentage: number;
@@ -297,7 +297,7 @@ export default function TeacherDashboard() {
                         {sub.overallScore}%
                       </span>
                     </td>
-                    <td className="py-3 text-muted-foreground">{new Date(sub.submittedAt).toLocaleDateString()}</td>
+                    <td className="py-3 text-muted-foreground">{new Date(sub.createdAt).toLocaleDateString()}</td>
                     <td className="py-3">
                       <Button
                         variant="ghost"
