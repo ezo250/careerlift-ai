@@ -141,26 +141,56 @@ export default function TeacherDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'My Students', value: sectionStudents.length, icon: Users, color: 'bg-primary/10 text-primary' },
-          { label: 'Total Submissions', value: totalSubmissions, icon: FileText, color: 'bg-secondary/10 text-secondary' },
-          { label: 'Active Jobs', value: sectionJobs.length, icon: BarChart3, color: 'bg-kepler-gold/10 text-kepler-gold' },
-          { label: 'Average Score', value: `${avgScore}%`, icon: TrendingUp, color: 'bg-kepler-orange/10 text-kepler-orange' },
-        ].map((s, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="stat-card"
-          >
-            <div className={`w-10 h-10 rounded-lg ${s.color} flex items-center justify-center mb-3`}>
-              <s.icon className="w-5 h-5" />
-            </div>
-            <div className="font-display text-2xl font-bold text-foreground">{s.value}</div>
-            <div className="text-xs text-muted-foreground mt-1">{s.label}</div>
-          </motion.div>
-        ))}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="stat-card"
+        >
+          <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+            <Users className="w-5 h-5" />
+          </div>
+          <div className="font-display text-2xl font-bold text-foreground">{sectionStudents.length}</div>
+          <div className="text-xs text-muted-foreground mt-1">My Students</div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="stat-card"
+        >
+          <div className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center mb-3">
+            <FileText className="w-5 h-5" />
+          </div>
+          <div className="font-display text-2xl font-bold text-foreground">{totalSubmissions}</div>
+          <div className="text-xs text-muted-foreground mt-1">Total Submissions</div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="stat-card"
+        >
+          <div className="w-10 h-10 rounded-lg bg-kepler-gold/10 text-kepler-gold flex items-center justify-center mb-3">
+            <TrendingUp className="w-5 h-5" />
+          </div>
+          <div className="font-display text-2xl font-bold text-foreground">{avgScore}%</div>
+          <div className="text-xs text-muted-foreground mt-1">Average Score</div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="stat-card"
+        >
+          <div className="w-10 h-10 rounded-lg bg-kepler-orange/10 text-kepler-orange flex items-center justify-center mb-3">
+            <BarChart3 className="w-5 h-5" />
+          </div>
+          <div className="font-display text-2xl font-bold text-foreground">{sectionJobs.length}</div>
+          <div className="text-xs text-muted-foreground mt-1">Active Jobs</div>
+        </motion.div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
