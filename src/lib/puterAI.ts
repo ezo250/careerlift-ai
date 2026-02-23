@@ -98,7 +98,7 @@ ${criteriaText}
 
 ═══════════════════════════════════════════════════════════════
 
-CRITICAL REQUIREMENT: You MUST analyze and return ALL 6 criteria in the "grades" array:
+CRITICAL REQUIREMENT: You MUST analyze and return ALL 6 criteria in the "grades" array AND populate ALL category items with specific evidence and improvements:
 
 1. Formatting & Layout - Analyze margins, fonts, spacing, section headers, ATS compatibility
 2. Contact Information - Evaluate completeness, professionalism of email/phone/LinkedIn
@@ -114,8 +114,16 @@ For EACH of the 6 criteria, you MUST provide:
 - percentage: same as score
 - feedback: 5-7 sentences of detailed expert analysis
 - suggestions: array of 2-3 specific actionable improvements
-- improvements: array of 2-3 objects with {original, improved, explanation}
+- improvements: array of 2-3 objects with {original, improved, explanation} - MUST include EXACT quotes from student's document
 - severity: "critical", "major", or "minor"
+
+For EACH category item, you MUST provide:
+- evidence: EXACT quote from the student's document showing the issue
+- improvement: SPECIFIC corrected version showing how to fix it
+
+EXAMPLE of what you MUST do:
+- evidence: "I am responsible for managing sales" 
+- improvement: "Managed B2B sales pipeline, increasing revenue by 30%"
 
 RETURN ONLY VALID JSON (no markdown):
 {
@@ -144,22 +152,62 @@ RETURN ONLY VALID JSON (no markdown):
     {
       "name": "Structure & Content",
       "score": 7,
-      "items": []
+      "items": [
+        {
+          "criterion": "Contact section complete with name, city, phone, email, LinkedIn",
+          "status": "partial",
+          "points": 1,
+          "maxPoints": 2,
+          "feedback": "Assessment of contact completeness",
+          "evidence": "Exact text from document showing issue",
+          "improvement": "How to fix it with specific example"
+        }
+      ]
     },
     {
       "name": "Professional Profile",
       "score": 10,
-      "items": []
+      "items": [
+        {
+          "criterion": "Profile written in third person without I/me/my",
+          "status": "fail",
+          "points": 0,
+          "maxPoints": 2,
+          "feedback": "Assessment of profile writing style",
+          "evidence": "Quote showing first-person usage",
+          "improvement": "Rewritten in third person"
+        }
+      ]
     },
     {
       "name": "Work Experience & Bullets",
       "score": 0,
-      "items": []
+      "items": [
+        {
+          "criterion": "Bullets start with action verbs, not 'I' or 'Responsible for'",
+          "status": "fail",
+          "points": 0,
+          "maxPoints": 2,
+          "feedback": "Assessment of bullet point structure",
+          "evidence": "Quote of problematic bullet",
+          "improvement": "Rewritten with strong action verb"
+        }
+      ]
     },
     {
       "name": "Language & Professionalism",
       "score": 33,
-      "items": []
+      "items": [
+        {
+          "criterion": "No first-person pronouns (I, me, my, we, our)",
+          "status": "fail",
+          "points": 0,
+          "maxPoints": 2,
+          "feedback": "Assessment of pronoun usage",
+          "evidence": "Sentences containing I/me/my",
+          "improvement": "Rewritten without first-person"
+        }
+      ]
     }
   ],
   "grades": [
