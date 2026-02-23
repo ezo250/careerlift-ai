@@ -98,62 +98,18 @@ ${criteriaText}
 
 ═══════════════════════════════════════════════════════════════
 
-ANALYSIS FRAMEWORK:
+CRITICAL: You MUST provide detailed analysis for ALL 6 criteria:
+1. Formatting & Layout
+2. Contact Information  
+3. Skills Match
+4. Experience Relevance
+5. Grammar & Spelling
+6. Cover Letter Customization
 
-1. DOCUMENT TYPE VERIFICATION
-- Is this a resume or cover letter?
-- Does it follow standard resume structure?
-- Is it using first-person pronouns (I, me, my)?
-
-2. FORMATTING & PRESENTATION (Detailed Rubric)
-Evaluate EACH criterion:
-✓/✗ Margins consistent (0.5-1 inch) [2 pts]
-✓/✗ One page (or two if 5+ years exp) [2 pts]
-✓/✗ Font consistent throughout [2 pts]
-✓/✗ Section headings clearly labeled [2 pts]
-✓/✗ ATS-friendly (no graphics) [2 pts]
-
-3. STRUCTURE & CONTENT (Detailed Rubric)
-✓/✗ Contact section complete [2 pts]
-✓/✗ Email is professional [2 pts]
-✓/✗ LinkedIn URL customized [2 pts]
-✓/✗ Work history reverse chronological [2 pts]
-✓/✗ Education complete [2 pts]
-✓/✗ Awards/certifications included [2 pts]
-✓/✗ References section [2 pts]
-
-4. PROFESSIONAL PROFILE (Detailed Rubric)
-✓/✗ Profile is 3-4 sentences [2 pts]
-✓/✗ Written in third person [2 pts]
-✓/✗ Describes what candidate brings [2 pts]
-✓/✗ Includes measurable achievement [2 pts]
-✓/✗ Tailored to specific role [2 pts]
-
-5. WORK EXPERIENCE & BULLETS (Detailed Rubric)
-✓/✗ Each role has 3-6 bullets [2 pts]
-✓/✗ Bullets start with action verbs [2 pts]
-✓/✗ Parallel grammatical structure [2 pts]
-✓/✗ Action + Task + Result format [2 pts]
-✓/✗ Most relevant bullets first [2 pts]
-
-6. LANGUAGE & PROFESSIONALISM (Detailed Rubric)
-✓/✗ No first-person pronouns [2 pts]
-✓/✗ No irrelevant personal info [2 pts]
-✓/✗ Dates formatted consistently [2 pts]
-✓/✗ Action verbs varied [2 pts]
-✓/✗ Free of spelling/grammar errors [2 pts]
-✓/✗ Evidence of peer review [2 pts]
-
-7. JOB DESCRIPTION ALIGNMENT
-- Extract ALL required skills from job description
-- Calculate exact match percentage
-- Identify critical missing skills
-
-8. PROVIDE CONCRETE IMPROVEMENTS
-For EVERY issue, provide:
-- EXACT problematic text from document
-- IMPROVED version showing how to fix it
-- Clear explanation why improvement is better
+For EACH criterion, provide:
+- 5-7 sentence expert analysis
+- 2-3 specific actionable suggestions
+- 2-3 before/after improvement examples with exact text
 
 RETURN ONLY VALID JSON (no markdown):
 {
@@ -202,21 +158,116 @@ RETURN ONLY VALID JSON (no markdown):
   ],
   "grades": [
     {
-      "criterionId": "id",
-      "criterionName": "Name",
+      "criterionId": "formatting",
+      "criterionName": "Formatting & Layout",
       "score": 60,
       "maxScore": 100,
       "percentage": 60,
-      "feedback": "Detailed 5-7 sentence analysis",
-      "suggestions": ["Action 1", "Action 2"],
+      "feedback": "Detailed 5-7 sentence analysis of formatting issues, layout consistency, margins, font usage, and overall visual presentation.",
+      "suggestions": ["Ensure consistent font and spacing throughout", "Add proper section headers", "Fix margin alignment"],
       "improvements": [
         {
-          "original": "Exact text from student",
-          "improved": "Corrected version",
-          "explanation": "Why this is better"
+          "original": "Current formatting issue from document",
+          "improved": "Corrected formatting example",
+          "explanation": "Why this formatting is better and more professional"
+        },
+        {
+          "original": "Another formatting issue",
+          "improved": "Fixed version",
+          "explanation": "Explanation of improvement"
         }
       ],
-      "exactLocations": ["Resume > Section"],
+      "exactLocations": ["Resume > Header"],
+      "severity": "major"
+    },
+    {
+      "criterionId": "contact",
+      "criterionName": "Contact Information",
+      "score": 50,
+      "maxScore": 100,
+      "percentage": 50,
+      "feedback": "Detailed 5-7 sentence analysis of contact information completeness, professionalism, and accessibility.",
+      "suggestions": ["Replace placeholder email", "Add LinkedIn URL", "Ensure phone number is complete"],
+      "improvements": [
+        {
+          "original": "Email: [your email]",
+          "improved": "Email: firstname.lastname@email.com",
+          "explanation": "Professional email format that employers can actually use"
+        }
+      ],
+      "exactLocations": ["Resume > Contact Section"],
+      "severity": "critical"
+    },
+    {
+      "criterionId": "skills",
+      "criterionName": "Skills Match",
+      "score": 40,
+      "maxScore": 100,
+      "percentage": 40,
+      "feedback": "Detailed 5-7 sentence analysis comparing student's skills against job requirements, identifying gaps and misalignments.",
+      "suggestions": ["Add job-specific technical skills", "Highlight relevant competencies", "Remove irrelevant skills"],
+      "improvements": [
+        {
+          "original": "Skills: Microsoft Office, Canva",
+          "improved": "Skills: Data Analysis, Project Management, Stakeholder Engagement, Microsoft Office Suite",
+          "explanation": "Aligns skills directly with job requirements"
+        }
+      ],
+      "exactLocations": ["Resume > Skills Section"],
+      "severity": "critical"
+    },
+    {
+      "criterionId": "experience",
+      "criterionName": "Experience Relevance",
+      "score": 30,
+      "maxScore": 100,
+      "percentage": 30,
+      "feedback": "Detailed 5-7 sentence analysis of how work experience aligns with job requirements and demonstrates relevant capabilities.",
+      "suggestions": ["Highlight transferable skills", "Add quantifiable achievements", "Reframe experience to match job"],
+      "improvements": [
+        {
+          "original": "Responsible for sales",
+          "improved": "Managed client relationships and increased sales by 25% through strategic outreach",
+          "explanation": "Shows impact with metrics and action verbs"
+        }
+      ],
+      "exactLocations": ["Resume > Experience Section"],
+      "severity": "major"
+    },
+    {
+      "criterionId": "grammar",
+      "criterionName": "Grammar & Spelling",
+      "score": 90,
+      "maxScore": 100,
+      "percentage": 90,
+      "feedback": "Detailed 5-7 sentence analysis of grammar, spelling, punctuation, and overall writing quality.",
+      "suggestions": ["Fix punctuation errors", "Correct spelling mistakes", "Improve sentence structure"],
+      "improvements": [
+        {
+          "original": "Text with error",
+          "improved": "Corrected text",
+          "explanation": "Proper grammar and punctuation"
+        }
+      ],
+      "exactLocations": ["Throughout document"],
+      "severity": "minor"
+    },
+    {
+      "criterionId": "coverletter",
+      "criterionName": "Cover Letter Customization",
+      "score": 20,
+      "maxScore": 100,
+      "percentage": 20,
+      "feedback": "Detailed 5-7 sentence analysis of cover letter customization, relevance to position, and persuasiveness.",
+      "suggestions": ["Address specific company and role", "Highlight relevant achievements", "Show genuine interest"],
+      "improvements": [
+        {
+          "original": "Generic cover letter opening",
+          "improved": "Customized opening addressing specific role and company",
+          "explanation": "Shows research and genuine interest in position"
+        }
+      ],
+      "exactLocations": ["Cover Letter"],
       "severity": "critical"
     }
   ],
