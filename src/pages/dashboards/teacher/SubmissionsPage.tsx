@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Eye, TrendingDown, TrendingUp } from 'lucide-react';
+import { FileText, Eye, TrendingDown, TrendingUp, Filter } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import SubmissionDetail from '@/components/SubmissionDetail';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function SubmissionsPage() {
   const { user } = useAuth();
@@ -13,6 +14,8 @@ export default function SubmissionsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState<any>(null);
+  const [sortBy, setSortBy] = useState<string>('all');
+  const [customLimit, setCustomLimit] = useState<string>('10');
 
   useEffect(() => {
     loadData();
@@ -51,6 +54,13 @@ export default function SubmissionsPage() {
   const avgScore = submissions.length
     ? Math.round(submissions.reduce((sum, s) => sum + s.overallScore, 0) / submissions.length)
     : 0;
+
+  const sortedSubmissions = [...submissions].sort((a, b) => b.overallScore - a.overallScore);
+  const displayedSubmissions = sortBy === 'all' 
+    ? submissions 
+    : sortBy === 'custom'
+    ? sortedSubmissions.slice(0, parseInt(customLimit) || 10)
+    : sortedSubmissions.slice(0, parseInt(sortBy));
 
   return (
     <div className="space-y-6">
@@ -124,11 +134,39 @@ export default function SubmissionsPage() {
         transition={{ delay: 0.2 }}
         className="glass-card-elevated p-6"
       >
-        <h3 className="font-display font-semibold text-foreground mb-4">All Submissions</h3>
-        <div className="overflow-x-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display font-semibold text-foreground">All Submissions</h3>
+          <div className="flex items-center gap-3">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-40 h-9 rounded-xl">
+                <SelectValue placeholder="Sort by..." />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="all">All Submissions</SelectItem>
+                <SelectItem value="5">Top 5</SelectItem>
+                <SelectItem value="10">Top 10</SelectItem>
+                <SelectItem value="20">Top 20</SelectItem>
+                <SelectItem value="custom">Custom</SelectItem>
+              </SelectContent>
+            </Select>
+            {sortBy === 'custom' && (
+              <input
+                type="number"
+                min="1"
+                value={customLimit}
+                onChange={e => setCustomLimit(e.target.value)}
+                className="w-20 h-9 px-3 rounded-xl border border-border bg-background text-sm"
+                placeholder="#"
+              />
+            )}
+          </div>
+        </div>
+        <div className={`overflow-x-auto ${displayedSubmissions.length > 10 ? 'max-h-[600px] overflow-y-auto' : ''}`}>
           <table className="w-full text-sm">
-            <thead>
+            <thead className="sticky top-0 bg-card z-10">
               <tr className="border-b border-border text-left">
+                <th className="pb-3 font-medium text-muted-foreground">Rank</th>
                 <th className="pb-3 font-medium text-muted-foreground">Student</th>
                 <th className="pb-3 font-medium text-muted-foreground">Job</th>
                 <th className="pb-3 font-medium text-muted-foreground">#</th>
@@ -138,12 +176,17 @@ export default function SubmissionsPage() {
               </tr>
             </thead>
             <tbody>
-              {submissions.map(sub => {
+              {displayedSubmissions.map((sub, idx) => {
                 const job = jobs.find(j => j._id === (sub.jobId?._id || sub.jobId));
                 const studentName = sub.studentId?.name || 'Unknown';
                 
                 return (
                   <tr key={sub._id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                    <td className="py-3 text-muted-foreground">
+                      {sortBy !== 'all' && (
+                        <span className="font-semibold text-foreground">#{idx + 1}</span>
+                      )}
+                    </td>
                     <td className="py-3 font-medium text-foreground">{studentName}</td>
                     <td className="py-3 text-muted-foreground">{job?.title || 'N/A'}</td>
                     <td className="py-3 text-muted-foreground">#{sub.submissionNumber}</td>
@@ -172,7 +215,7 @@ export default function SubmissionsPage() {
               })}
             </tbody>
           </table>
-          {submissions.length === 0 && (
+          {displayedSubmissions.length === 0 && (
             <div className="text-center py-8">
               <p className="text-muted-foreground">No submissions yet</p>
             </div>

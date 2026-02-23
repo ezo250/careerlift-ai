@@ -18,6 +18,7 @@ const adminNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   { label: 'Sections', icon: GraduationCap, path: '/dashboard/sections' },
   { label: 'Teachers', icon: UserCheck, path: '/dashboard/teachers' },
+  { label: 'Students', icon: Users, path: '/dashboard/students' },
   { label: 'Job Submissions', icon: Briefcase, path: '/dashboard/jobs' },
   { label: 'Student Grades', icon: BarChart3, path: '/dashboard/grades' },
   { label: 'Checklists', icon: ClipboardList, path: '/dashboard/checklists' },

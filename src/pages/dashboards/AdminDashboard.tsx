@@ -112,7 +112,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-5 h-5 text-kepler-orange" />
-              <h3 className="font-display font-semibold text-foreground">AI Flagged: Common Weaknesses</h3>
+              <h3 className="font-display font-semibold text-foreground">Areas Needing Attention</h3>
             </div>
             <div className="space-y-4">
               {stats.commonWeaknesses.slice(0, 5).map((w: any, i: number) => (
@@ -132,6 +132,24 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
+              <div className="mt-6 pt-4 border-t border-border">
+                <h4 className="text-sm font-semibold text-foreground mb-3">AI Recommendations</h4>
+                <div className="space-y-2">
+                  {stats.commonWeaknesses.slice(0, 3).map((w: any, i: number) => {
+                    const rec = w.percentage > 40 
+                      ? `Critical: ${w.area} affects ${w.percentage}% of students. Immediate intervention needed.`
+                      : w.percentage > 25
+                      ? `${w.area} is a concern for ${w.percentage}% of students. Consider targeted workshops.`
+                      : `Monitor ${w.area} (${w.percentage}% affected). Provide additional resources.`;
+                    return (
+                      <div key={i} className="flex gap-2 text-xs text-muted-foreground">
+                        <span className="text-primary mt-0.5">•</span>
+                        <span>{rec}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

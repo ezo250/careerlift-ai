@@ -20,7 +20,8 @@ export default function JobsPage() {
     sectionId: '',
     maxSubmissions: 2,
     checklistId: '',
-    deadline: ''
+    deadline: '',
+    allowLateSubmissions: false
   });
 
   useEffect(() => {
@@ -56,7 +57,8 @@ export default function JobsPage() {
         sectionId: '',
         maxSubmissions: 2,
         checklistId: '',
-        deadline: ''
+        deadline: '',
+        allowLateSubmissions: false
       });
       setShowCreate(false);
       loadData();
@@ -202,6 +204,18 @@ export default function JobsPage() {
                   required
                 />
               </div>
+              <div className="flex items-center gap-2 pt-8">
+                <input
+                  type="checkbox"
+                  id="allowLate"
+                  checked={formData.allowLateSubmissions}
+                  onChange={e => setFormData({ ...formData, allowLateSubmissions: e.target.checked })}
+                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <label htmlFor="allowLate" className="text-sm text-foreground cursor-pointer">
+                  Allow late submissions
+                </label>
+              </div>
             </div>
             <div className="flex gap-3">
               <Button type="submit" className="bg-primary text-primary-foreground">
@@ -256,6 +270,11 @@ export default function JobsPage() {
                   <Briefcase className="w-4 h-4" />
                   <span>Max Submissions: {job.maxSubmissions}</span>
                 </div>
+                {job.allowLateSubmissions && (
+                  <div className="flex items-center gap-2 text-xs text-secondary">
+                    <span>✓ Late submissions allowed</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-2">
@@ -361,6 +380,13 @@ export default function JobsPage() {
                 <h4 className="font-semibold text-foreground mb-2">Created</h4>
                 <p className="text-muted-foreground">{new Date(viewJob.createdAt).toLocaleString()}</p>
               </div>
+
+              {viewJob.allowLateSubmissions && (
+                <div>
+                  <h4 className="font-semibold text-foreground mb-2">Late Submissions</h4>
+                  <p className="text-secondary">Allowed</p>
+                </div>
+              )}
             </div>
 
             <div className="mt-6 flex gap-3">

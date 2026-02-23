@@ -9,6 +9,7 @@ import TeachersPage from '@/pages/dashboards/admin/TeachersPage';
 import JobsPage from '@/pages/dashboards/admin/JobsPage';
 import GradesPage from '@/pages/dashboards/admin/GradesPage';
 import ChecklistsPage from '@/pages/dashboards/admin/ChecklistsPage';
+import StudentsPage from '@/pages/dashboards/admin/StudentsPage';
 import TeacherStudentsPage from '@/pages/dashboards/teacher/StudentsPage';
 import TeacherSubmissionsPage from '@/pages/dashboards/teacher/SubmissionsPage';
 import TeacherAnalyticsPage from '@/pages/dashboards/teacher/AnalyticsPage';
@@ -28,6 +29,7 @@ export default function DashboardRouter() {
             <Route index element={<AdminDashboard />} />
             <Route path="sections" element={<SectionsPage />} />
             <Route path="teachers" element={<TeachersPage />} />
+            <Route path="students" element={<StudentsPage />} />
             <Route path="jobs" element={<JobsPage />} />
             <Route path="grades" element={<GradesPage />} />
             <Route path="checklists" element={<ChecklistsPage />} />

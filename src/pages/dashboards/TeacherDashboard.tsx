@@ -91,11 +91,11 @@ export default function TeacherDashboard() {
     return assignedSectionIds.some(id => id === studentSectionId);
   });
 
-  const avgScore = sectionSubmissions.length
-    ? Math.round(sectionSubmissions.reduce((a, s) => a + s.overallScore, 0) / sectionSubmissions.length)
+  const totalSubmissions = sectionSubmissions.length;
+  const avgScore = totalSubmissions
+    ? Math.round(sectionSubmissions.reduce((a, s) => a + s.overallScore, 0) / totalSubmissions)
     : 0;
 
-  // Common weaknesses for this teacher's students
   const weaknesses: Record<string, number[]> = {};
   sectionSubmissions.forEach(sub => {
     sub.grades.forEach(g => {
@@ -106,6 +106,12 @@ export default function TeacherDashboard() {
   const avgWeaknesses = Object.entries(weaknesses)
     .map(([area, scores]) => ({ area, avg: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) }))
     .sort((a, b) => a.avg - b.avg);
+
+  const aiRecommendations = avgWeaknesses.slice(0, 3).map(w => {
+    if (w.avg < 60) return `Focus on ${w.area} - students averaging ${w.avg}%. Consider additional practice materials.`;
+    if (w.avg < 75) return `${w.area} needs improvement (${w.avg}% avg). Review common mistakes with students.`;
+    return `Monitor ${w.area} (${w.avg}% avg). Students performing adequately but can improve.`;
+  });
 
   if (isLoading) {
     return (
@@ -137,9 +143,9 @@ export default function TeacherDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'My Students', value: sectionStudents.length, icon: Users, color: 'bg-primary/10 text-primary' },
-          { label: 'Submissions', value: sectionSubmissions.length, icon: FileText, color: 'bg-secondary/10 text-secondary' },
+          { label: 'Total Submissions', value: totalSubmissions, icon: FileText, color: 'bg-secondary/10 text-secondary' },
           { label: 'Active Jobs', value: sectionJobs.length, icon: BarChart3, color: 'bg-kepler-gold/10 text-kepler-gold' },
-          { label: 'Avg. Score', value: `${avgScore}%`, icon: TrendingUp, color: 'bg-kepler-orange/10 text-kepler-orange' },
+          { label: 'Average Score', value: `${avgScore}%`, icon: TrendingUp, color: 'bg-kepler-orange/10 text-kepler-orange' },
         ].map((s, i) => (
           <motion.div
             key={i}
@@ -158,7 +164,6 @@ export default function TeacherDashboard() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Weakness areas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -169,33 +174,50 @@ export default function TeacherDashboard() {
             <AlertTriangle className="w-5 h-5 text-kepler-orange" />
             <h3 className="font-display font-semibold text-foreground">Areas Needing Attention</h3>
           </div>
-          <div className="space-y-4">
-            {avgWeaknesses.map((w, i) => (
-              <div key={i}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-foreground font-medium">{w.area}</span>
-                  <span className={`font-medium ${w.avg >= 80 ? 'text-secondary' : w.avg >= 60 ? 'text-kepler-gold' : 'text-destructive'}`}>
-                    {w.avg}% avg
-                  </span>
+          {avgWeaknesses.length > 0 ? (
+            <div className="space-y-4">
+              {avgWeaknesses.slice(0, 5).map((w, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-foreground font-medium">{w.area}</span>
+                    <span className={`font-medium ${w.avg >= 80 ? 'text-secondary' : w.avg >= 60 ? 'text-kepler-gold' : 'text-destructive'}`}>
+                      {w.avg}% avg
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${w.avg}%` }}
+                      transition={{ delay: 0.4 + i * 0.1, duration: 0.8 }}
+                      className="h-full rounded-full"
+                      style={{
+                        background: w.avg >= 80
+                          ? 'hsl(147, 54%, 40%)'
+                          : w.avg >= 60
+                          ? 'hsl(40, 90%, 55%)'
+                          : 'hsl(0, 72%, 51%)',
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="h-2 rounded-full bg-muted overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${w.avg}%` }}
-                    transition={{ delay: 0.4 + i * 0.1, duration: 0.8 }}
-                    className="h-full rounded-full"
-                    style={{
-                      background: w.avg >= 80
-                        ? 'hsl(147, 54%, 40%)'
-                        : w.avg >= 60
-                        ? 'hsl(40, 90%, 55%)'
-                        : 'hsl(0, 72%, 51%)',
-                    }}
-                  />
+              ))}
+              {aiRecommendations.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-border">
+                  <h4 className="text-sm font-semibold text-foreground mb-3">AI Recommendations</h4>
+                  <div className="space-y-2">
+                    {aiRecommendations.map((rec, i) => (
+                      <div key={i} className="flex gap-2 text-xs text-muted-foreground">
+                        <span className="text-primary mt-0.5">•</span>
+                        <span>{rec}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No data yet. Submissions will appear here.</p>
+          )}
         </motion.div>
 
         {/* Students list */}
