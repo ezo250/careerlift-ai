@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Users, Briefcase, FileText, BarChart3, Settings,
-  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell, Search
+  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell, Search, Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
@@ -39,6 +39,7 @@ const studentNav: NavItem[] = [
   { label: 'Job Opportunities', icon: Briefcase, path: '/dashboard/jobs' },
   { label: 'My Submissions', icon: FileText, path: '/dashboard/submissions' },
   { label: 'My Grades', icon: BarChart3, path: '/dashboard/grades' },
+  { label: 'Self Evaluation', icon: Sparkles, path: '/dashboard/self-evaluation' },
   { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
 

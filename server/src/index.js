@@ -12,6 +12,7 @@ import checklistRoutes from './routes/checklists.js';
 import inviteRoutes from './routes/invites.js';
 import statsRoutes from './routes/stats.js';
 import userRoutes from './routes/users.js';
+import jobCategoryRoutes from './routes/jobCategories.js';
 
 dotenv.config();
 
@@ -76,6 +77,7 @@ app.use('/api/checklists', checklistRoutes);
 app.use('/api/invites', inviteRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/job-categories', jobCategoryRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

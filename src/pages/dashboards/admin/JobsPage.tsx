@@ -10,9 +10,12 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [sections, setSections] = useState<any[]>([]);
   const [checklists, setChecklists] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [viewJob, setViewJob] = useState<any>(null);
+  const [newCategory, setNewCategory] = useState({ name: '', description: '' });
   const [formData, setFormData] = useState({
     title: '',
     company: '',
@@ -21,7 +24,10 @@ export default function JobsPage() {
     maxSubmissions: 2,
     checklistId: '',
     deadline: '',
-    allowLateSubmissions: false
+    allowLateSubmissions: false,
+    categoryId: '',
+    requireResume: true,
+    requireCoverLetter: true
   });
 
   useEffect(() => {
@@ -30,14 +36,16 @@ export default function JobsPage() {
 
   const loadData = async () => {
     try {
-      const [jobsData, sectionsData, checklistsData] = await Promise.all([
+      const [jobsData, sectionsData, checklistsData, categoriesData] = await Promise.all([
         api.getJobs(),
         api.getSections(),
-        api.getChecklists()
+        api.getChecklists(),
+        api.getJobCategories()
       ]);
       setJobs(jobsData);
       setSections(sectionsData);
       setChecklists(checklistsData);
+      setCategories(categoriesData);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -58,9 +66,25 @@ export default function JobsPage() {
         maxSubmissions: 2,
         checklistId: '',
         deadline: '',
-        allowLateSubmissions: false
+        allowLateSubmissions: false,
+        categoryId: '',
+        requireResume: true,
+        requireCoverLetter: true
       });
       setShowCreate(false);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await api.createJobCategory(newCategory);
+      toast.success('Category created successfully');
+      setNewCategory({ name: '', description: '' });
+      setShowCategoryModal(false);
       loadData();
     } catch (error: any) {
       toast.error(error.message);
@@ -92,9 +116,14 @@ export default function JobsPage() {
           <h1 className="font-display text-2xl lg:text-3xl font-bold text-foreground">Job Submissions Management</h1>
           <p className="text-muted-foreground mt-1">Create and manage job opportunities for students</p>
         </div>
-        <Button onClick={() => setShowCreate(!showCreate)} className="bg-primary text-primary-foreground">
-          <Plus className="w-4 h-4 mr-2" /> Create Job
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowCategoryModal(true)} variant="outline" className="border-border">
+            <Plus className="w-4 h-4 mr-2" /> Manage Categories
+          </Button>
+          <Button onClick={() => setShowCreate(!showCreate)} className="bg-primary text-primary-foreground">
+            <Plus className="w-4 h-4 mr-2" /> Create Job
+          </Button>
+        </div>
       </div>
 
       {/* Create form */}
@@ -181,6 +210,26 @@ export default function JobsPage() {
                 </Select>
               </div>
               <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Category (Optional)</label>
+                <Select
+                  value={formData.categoryId}
+                  onValueChange={(value) => setFormData({ ...formData, categoryId: value })}
+                >
+                  <SelectTrigger className="h-11 rounded-xl">
+                    <SelectValue placeholder="Select category..." />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {categories.map(c => (
+                      <SelectItem key={c._id} value={c._id} className="cursor-pointer hover:bg-primary/10">
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Max Submissions</label>
                 <input
                   type="number"
@@ -192,8 +241,6 @@ export default function JobsPage() {
                   required
                 />
               </div>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">Deadline</label>
                 <input
@@ -204,18 +251,47 @@ export default function JobsPage() {
                   required
                 />
               </div>
-              <div className="flex items-center gap-2 pt-8">
-                <input
-                  type="checkbox"
-                  id="allowLate"
-                  checked={formData.allowLateSubmissions}
-                  onChange={e => setFormData({ ...formData, allowLateSubmissions: e.target.checked })}
-                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
-                />
-                <label htmlFor="allowLate" className="text-sm text-foreground cursor-pointer">
-                  Allow late submissions
-                </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Required Documents</label>
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="requireResume"
+                    checked={formData.requireResume}
+                    onChange={e => setFormData({ ...formData, requireResume: e.target.checked })}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="requireResume" className="text-sm text-foreground cursor-pointer">
+                    Require Resume
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="requireCoverLetter"
+                    checked={formData.requireCoverLetter}
+                    onChange={e => setFormData({ ...formData, requireCoverLetter: e.target.checked })}
+                    className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="requireCoverLetter" className="text-sm text-foreground cursor-pointer">
+                    Require Cover Letter
+                  </label>
+                </div>
               </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="allowLate"
+                checked={formData.allowLateSubmissions}
+                onChange={e => setFormData({ ...formData, allowLateSubmissions: e.target.checked })}
+                className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+              />
+              <label htmlFor="allowLate" className="text-sm text-foreground cursor-pointer">
+                Allow late submissions
+              </label>
             </div>
             <div className="flex gap-3">
               <Button type="submit" className="bg-primary text-primary-foreground">
@@ -400,6 +476,76 @@ export default function JobsPage() {
               <Button onClick={() => setViewJob(null)} className="flex-1">
                 Close
               </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Category Modal */}
+      {showCategoryModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setShowCategoryModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-xl p-6 max-w-2xl w-full border border-border shadow-lg max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="font-display text-2xl font-bold text-foreground">Job Categories</h3>
+              <button
+                onClick={() => setShowCategoryModal(false)}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCategory} className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Category Name</label>
+                <input
+                  type="text"
+                  value={newCategory.name}
+                  onChange={e => setNewCategory({ ...newCategory, name: e.target.value })}
+                  className="kepler-input"
+                  placeholder="e.g., Software Development"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Description (Optional)</label>
+                <input
+                  type="text"
+                  value={newCategory.description}
+                  onChange={e => setNewCategory({ ...newCategory, description: e.target.value })}
+                  className="kepler-input"
+                  placeholder="Brief description"
+                />
+              </div>
+              <Button type="submit" className="bg-primary text-primary-foreground">
+                <Plus className="w-4 h-4 mr-2" /> Add Category
+              </Button>
+            </form>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground mb-3">Existing Categories</h4>
+              {categories.length > 0 ? (
+                categories.map(cat => (
+                  <div key={cat._id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{cat.name}</p>
+                      {cat.description && <p className="text-xs text-muted-foreground">{cat.description}</p>}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No categories yet</p>
+              )}
             </div>
           </motion.div>
         </motion.div>

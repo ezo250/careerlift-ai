@@ -42,8 +42,13 @@ export interface GradeResult {
     percentage: number;
     feedback: string;
     suggestions: string[];
-    exactLocations?: string[]; // Pinpoint exact errors in document
-    severity?: 'critical' | 'major' | 'minor'; // Error severity
+    improvements?: Array<{
+      original: string;
+      improved: string;
+      explanation: string;
+    }>;
+    exactLocations?: string[];
+    severity?: 'critical' | 'major' | 'minor';
   }>;
   overallScore: number;
   aiFeedback: string;
@@ -51,8 +56,8 @@ export interface GradeResult {
     strengths: string[];
     criticalIssues: string[];
     competitivePositioning: string;
-    atsCompatibility: number; // 0-100
-    interviewProbability: number; // 0-100
+    atsCompatibility: number;
+    interviewProbability: number;
     recommendedActions: string[];
   };
   detailedBreakdown?: {
@@ -144,6 +149,18 @@ RETURN ONLY VALID JSON (no markdown, no code blocks):
         "Specific action 2: Include missing skill from job description: [skill name]",
         "Specific action 3: Improve formatting in [section name]",
         "Specific action 4: Add action verb to achievement in [location]"
+      ],
+      "improvements": [
+        {
+          "original": "Worked on team projects",
+          "improved": "Led cross-functional team of 5 members to deliver 3 projects, resulting in 25% efficiency improvement",
+          "explanation": "Added leadership verb, quantified team size and outcomes, and demonstrated measurable impact"
+        },
+        {
+          "original": "Responsible for customer service",
+          "improved": "Managed customer relationships for 50+ clients, achieving 95% satisfaction rate and reducing complaint resolution time by 40%",
+          "explanation": "Replaced passive language with action verb, added specific metrics, and showed concrete results"
+        }
       ],
       "exactLocations": [
         "Resume > Experience section > Second bullet point",

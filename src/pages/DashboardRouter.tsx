@@ -17,6 +17,7 @@ import TeacherAnalyticsPage from '@/pages/dashboards/teacher/AnalyticsPage';
 import StudentJobsPage from '@/pages/dashboards/student/JobsPage';
 import StudentSubmissionsPage from '@/pages/dashboards/student/SubmissionsPage';
 import StudentGradesPage from '@/pages/dashboards/student/GradesPage';
+import SelfEvaluationPage from '@/pages/dashboards/student/SelfEvaluationPage';
 
 export default function DashboardRouter() {
   const { user } = useAuth();
@@ -52,6 +53,7 @@ export default function DashboardRouter() {
             <Route path="jobs" element={<StudentJobsPage />} />
             <Route path="submissions" element={<StudentSubmissionsPage />} />
             <Route path="grades" element={<StudentGradesPage />} />
+            <Route path="self-evaluation" element={<SelfEvaluationPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </>
         )}

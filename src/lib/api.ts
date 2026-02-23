@@ -114,6 +114,18 @@ class ApiClient {
     });
   }
 
+  // Job Categories
+  async getJobCategories() {
+    return this.request('/job-categories');
+  }
+
+  async createJobCategory(data: any) {
+    return this.request('/job-categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
   // Submissions
   async getSubmissions() {
     return this.request('/submissions');

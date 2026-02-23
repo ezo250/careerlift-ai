@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, FileText, CheckCircle2, AlertTriangle, Lightbulb, 
-  Target, TrendingUp, AlertCircle, MapPin, Award, Zap, Info
+  Target, TrendingUp, AlertCircle, MapPin, Award, Zap, Info, Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 
 interface SubmissionDetailProps {
   submission: any;
@@ -195,20 +196,30 @@ export default function SubmissionDetail({ submission, onBack }: SubmissionDetai
 
       {/* Submitted Files */}
       <div className="flex gap-4">
-        <div className="glass-card p-4 flex items-center gap-3 flex-1">
-          <FileText className="w-5 h-5 text-primary" />
-          <div>
-            <p className="text-sm font-medium text-foreground">{submission.coverLetterName || 'Cover Letter'}</p>
-            <p className="text-xs text-muted-foreground">Cover Letter Document</p>
+        {submission.coverLetterUrl && submission.coverLetterName && (
+          <div className="glass-card p-4 flex items-center gap-3 flex-1">
+            <FileText className="w-5 h-5 text-primary" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">{submission.coverLetterName}</p>
+              <p className="text-xs text-muted-foreground">Cover Letter Document</p>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => toast.info('Download feature coming soon')}>
+              <Download className="w-4 h-4" />
+            </Button>
           </div>
-        </div>
-        <div className="glass-card p-4 flex items-center gap-3 flex-1">
-          <FileText className="w-5 h-5 text-secondary" />
-          <div>
-            <p className="text-sm font-medium text-foreground">{submission.resumeName || 'Resume'}</p>
-            <p className="text-xs text-muted-foreground">Resume Document</p>
+        )}
+        {submission.resumeUrl && submission.resumeName && (
+          <div className="glass-card p-4 flex items-center gap-3 flex-1">
+            <FileText className="w-5 h-5 text-secondary" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">{submission.resumeName}</p>
+              <p className="text-xs text-muted-foreground">Resume Document</p>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => toast.info('Download feature coming soon')}>
+              <Download className="w-4 h-4" />
+            </Button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Detailed Criterion Grades */}
@@ -285,22 +296,58 @@ export default function SubmissionDetail({ submission, onBack }: SubmissionDetai
               </div>
             )}
 
-            {/* Suggestions */}
             {grade.suggestions && grade.suggestions.length > 0 && (
               <div>
                 <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                   <Lightbulb className="w-4 h-4 text-kepler-gold" />
                   How to Improve:
                 </p>
-                <div className="space-y-2">
-                  {grade.suggestions.map((suggestion: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2 p-3 rounded-lg bg-kepler-gold/5 border border-kepler-gold/20">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-kepler-gold text-white flex items-center justify-center text-xs font-bold">
-                        {idx + 1}
+                <div className="space-y-3">
+                  {grade.improvements && grade.improvements.length > 0 ? (
+                    grade.improvements.map((improvement: any, idx: number) => (
+                      <div key={idx} className="p-4 rounded-lg bg-kepler-gold/5 border border-kepler-gold/20">
+                        <div className="flex items-start gap-2 mb-2">
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-kepler-gold text-white flex items-center justify-center text-xs font-bold">
+                            {idx + 1}
+                          </div>
+                          <p className="text-sm font-medium text-foreground">{grade.suggestions[idx]}</p>
+                        </div>
+                        <div className="ml-7 space-y-2">
+                          <div className="p-2 rounded bg-destructive/10 border border-destructive/20">
+                            <p className="text-xs font-semibold text-destructive mb-1">❌ What you wrote:</p>
+                            <p className="text-xs text-foreground font-mono">{improvement.original}</p>
+                          </div>
+                          <div className="p-2 rounded bg-secondary/10 border border-secondary/20">
+                            <p className="text-xs font-semibold text-secondary mb-1">✅ Improved version:</p>
+                            <p className="text-xs text-foreground font-mono">{improvement.improved}</p>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(improvement.improved);
+                                toast.success('Copied to clipboard!');
+                              }}
+                              className="mt-2 text-xs text-secondary hover:underline flex items-center gap-1"
+                            >
+                              📋 Copy improved text
+                            </button>
+                          </div>
+                          <div className="p-2 rounded bg-muted/30">
+                            <p className="text-xs text-muted-foreground">
+                              <span className="font-semibold">Why this is better:</span> {improvement.explanation}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-foreground">{suggestion}</p>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    grade.suggestions.map((suggestion: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2 p-3 rounded-lg bg-kepler-gold/5 border border-kepler-gold/20">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-kepler-gold text-white flex items-center justify-center text-xs font-bold">
+                          {idx + 1}
+                        </div>
+                        <p className="text-sm text-foreground">{suggestion}</p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
