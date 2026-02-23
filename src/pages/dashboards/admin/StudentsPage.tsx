@@ -117,15 +117,15 @@ export default function StudentsPage() {
           </h3>
         </div>
 
-        <div className={`overflow-x-auto ${filteredStudents.length > 4 ? 'max-h-[400px] overflow-y-auto' : ''}`}>
+        <div className={`${filteredStudents.length > 4 ? 'max-h-[400px] overflow-y-auto' : ''}`}>
           <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-card z-10">
-              <tr className="border-b border-border text-left">
-                <th className="pb-3 font-medium text-muted-foreground">Student</th>
-                <th className="pb-3 font-medium text-muted-foreground">Email</th>
-                <th className="pb-3 font-medium text-muted-foreground">Section</th>
-                <th className="pb-3 font-medium text-muted-foreground">Joined</th>
-                <th className="pb-3 font-medium text-muted-foreground">Actions</th>
+            <thead className="sticky top-0 bg-card z-10 border-b border-border">
+              <tr className="text-left">
+                <th className="py-3 font-medium text-muted-foreground bg-card">Student</th>
+                <th className="py-3 font-medium text-muted-foreground bg-card">Email</th>
+                <th className="py-3 font-medium text-muted-foreground bg-card">Section</th>
+                <th className="py-3 font-medium text-muted-foreground bg-card">Joined</th>
+                <th className="py-3 font-medium text-muted-foreground bg-card">Actions</th>
               </tr>
             </thead>
             <tbody>

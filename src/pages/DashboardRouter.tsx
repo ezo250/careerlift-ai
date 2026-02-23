@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import AdminDashboard from '@/pages/dashboards/AdminDashboard';
 import TeacherDashboard from '@/pages/dashboards/TeacherDashboard';
 import StudentDashboard from '@/pages/dashboards/StudentDashboard';
+import SettingsPage from '@/pages/dashboards/SettingsPage';
 import SectionsPage from '@/pages/dashboards/admin/SectionsPage';
 import TeachersPage from '@/pages/dashboards/admin/TeachersPage';
 import JobsPage from '@/pages/dashboards/admin/JobsPage';
@@ -33,6 +34,7 @@ export default function DashboardRouter() {
             <Route path="jobs" element={<JobsPage />} />
             <Route path="grades" element={<GradesPage />} />
             <Route path="checklists" element={<ChecklistsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </>
         )}
         {user.role === 'teacher' && (
@@ -41,6 +43,7 @@ export default function DashboardRouter() {
             <Route path="students" element={<TeacherStudentsPage />} />
             <Route path="submissions" element={<TeacherSubmissionsPage />} />
             <Route path="analytics" element={<TeacherAnalyticsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </>
         )}
         {user.role === 'student' && (
@@ -49,6 +52,7 @@ export default function DashboardRouter() {
             <Route path="jobs" element={<StudentJobsPage />} />
             <Route path="submissions" element={<StudentSubmissionsPage />} />
             <Route path="grades" element={<StudentGradesPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </>
         )}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -23,6 +23,7 @@ const adminNav: NavItem[] = [
   { label: 'Job Submissions', icon: Briefcase, path: '/dashboard/jobs' },
   { label: 'Student Grades', icon: BarChart3, path: '/dashboard/grades' },
   { label: 'Checklists', icon: ClipboardList, path: '/dashboard/checklists' },
+  { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
 
 const teacherNav: NavItem[] = [
@@ -30,6 +31,7 @@ const teacherNav: NavItem[] = [
   { label: 'My Students', icon: Users, path: '/dashboard/students' },
   { label: 'Submissions', icon: FileText, path: '/dashboard/submissions' },
   { label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
+  { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
 
 const studentNav: NavItem[] = [
@@ -37,6 +39,7 @@ const studentNav: NavItem[] = [
   { label: 'Job Opportunities', icon: Briefcase, path: '/dashboard/jobs' },
   { label: 'My Submissions', icon: FileText, path: '/dashboard/submissions' },
   { label: 'My Grades', icon: BarChart3, path: '/dashboard/grades' },
+  { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {

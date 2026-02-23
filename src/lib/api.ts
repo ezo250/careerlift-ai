@@ -158,6 +158,13 @@ class ApiClient {
     });
   }
 
+  async changePassword(currentPassword: string, newPassword: string) {
+    return this.request('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  }
+
   // Checklists
   async getChecklists() {
     return this.request('/checklists');

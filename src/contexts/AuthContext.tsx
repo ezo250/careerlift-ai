@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (email: string, password: string, name: string, sectionId: string, inviteCode?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
@@ -93,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, login, signup, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
