@@ -21,8 +21,8 @@ export default function SubmissionDetail({ submission, onBack }: SubmissionDetai
   const hasAdvancedGrading = submission.overallGrade && submission.categories;
 
   return (
-    <div className="space-y-6">
-      <Button variant="ghost" onClick={onBack} className="text-muted-foreground hover:text-foreground">
+    <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
+      <Button variant="ghost" onClick={onBack} className="text-muted-foreground hover:text-foreground sticky top-0 bg-background z-10">
         <ArrowLeft className="w-4 h-4 mr-2" /> Back
       </Button>
 
