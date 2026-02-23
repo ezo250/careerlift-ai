@@ -19,6 +19,8 @@ import StudentSubmissionsPage from '@/pages/dashboards/student/SubmissionsPage';
 import StudentGradesPage from '@/pages/dashboards/student/GradesPage';
 import SelfEvaluationPage from '@/pages/dashboards/student/SelfEvaluationPage';
 
+import CategoriesPage from '@/pages/dashboards/admin/CategoriesPage';
+
 export default function DashboardRouter() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
@@ -33,6 +35,7 @@ export default function DashboardRouter() {
             <Route path="teachers" element={<TeachersPage />} />
             <Route path="students" element={<StudentsPage />} />
             <Route path="jobs" element={<JobsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
             <Route path="grades" element={<GradesPage />} />
             <Route path="checklists" element={<ChecklistsPage />} />
             <Route path="settings" element={<SettingsPage />} />

@@ -114,6 +114,12 @@ class ApiClient {
     });
   }
 
+  async deleteJob(id: string) {
+    return this.request(`/jobs/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Job Categories
   async getJobCategories() {
     return this.request('/job-categories');

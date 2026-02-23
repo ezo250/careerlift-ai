@@ -18,7 +18,14 @@ router.get('/', async (req, res) => {
 router.get('/details', auth, async (req, res) => {
   try {
     const sections = await Section.find().populate('assignedTeachers', 'name email');
-    res.json(sections);
+    const sectionsWithCount = await Promise.all(sections.map(async (section) => {
+      const studentCount = await User.countDocuments({ sectionId: section._id, role: 'student' });
+      return {
+        ...section.toObject(),
+        studentCount
+      };
+    }));
+    res.json(sectionsWithCount);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

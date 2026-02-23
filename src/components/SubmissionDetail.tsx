@@ -9,6 +9,15 @@ interface SubmissionDetailProps {
 }
 
 export default function SubmissionDetail({ submission, onBack }: SubmissionDetailProps) {
+  if (!submission) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">No submission data available</p>
+        <Button onClick={onBack} className="mt-4">Go Back</Button>
+      </div>
+    );
+  }
+
   const hasAdvancedGrading = submission.overallGrade && submission.categories;
 
   if (hasAdvancedGrading) {

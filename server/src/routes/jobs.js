@@ -49,4 +49,14 @@ router.patch('/:id', auth, authorize('superadmin'), async (req, res) => {
   }
 });
 
+// Delete job
+router.delete('/:id', auth, authorize('superadmin'), async (req, res) => {
+  try {
+    await JobSubmission.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Job deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Briefcase, Calendar, Users, Eye, X } from 'lucide-react';
+import { Plus, Briefcase, Calendar, Users, Eye, X, Trash2, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api } from '@/lib/api';
@@ -85,6 +85,17 @@ export default function JobsPage() {
       toast.success('Category created successfully');
       setNewCategory({ name: '', description: '' });
       setShowCategoryModal(false);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleDelete = async (jobId: string) => {
+    if (!confirm('Are you sure you want to delete this job? This action cannot be undone.')) return;
+    try {
+      await api.deleteJob(jobId);
+      toast.success('Job deleted successfully');
       loadData();
     } catch (error: any) {
       toast.error(error.message);
@@ -354,20 +365,14 @@ export default function JobsPage() {
               </div>
 
               <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setViewJob(job)}
-                  className="flex-1"
-                >
-                  <Eye className="w-4 h-4 mr-1" /> View Details
+                <Button size="sm" variant="outline" onClick={() => setViewJob(job)} className="flex-1">
+                  <Eye className="w-4 h-4 mr-1" /> View
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => toggleStatus(job)}
-                >
+                <Button size="sm" variant="outline" onClick={() => toggleStatus(job)}>
                   {job.status === 'active' ? 'Close' : 'Activate'}
+                </Button>
+                <Button size="sm" variant="destructive" onClick={() => handleDelete(job._id)}>
+                  <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
             </motion.div>

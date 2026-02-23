@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Users, Briefcase, FileText, BarChart3, Settings,
-  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell, Search, Sparkles
+  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell, Search, Sparkles, Tag
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
@@ -21,6 +21,7 @@ const adminNav: NavItem[] = [
   { label: 'Teachers', icon: UserCheck, path: '/dashboard/teachers' },
   { label: 'Students', icon: Users, path: '/dashboard/students' },
   { label: 'Job Submissions', icon: Briefcase, path: '/dashboard/jobs' },
+  { label: 'Categories', icon: Tag, path: '/dashboard/categories' },
   { label: 'Student Grades', icon: BarChart3, path: '/dashboard/grades' },
   { label: 'Checklists', icon: ClipboardList, path: '/dashboard/checklists' },
   { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
