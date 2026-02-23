@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -6,6 +6,7 @@ import {
   LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
 
 
 interface NavItem {
@@ -43,6 +44,34 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user?.role === 'teacher' || user?.role === 'superadmin') {
+      loadNotifications();
+      const interval = setInterval(loadNotifications, 30000); // Refresh every 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const loadNotifications = async () => {
+    try {
+      const submissions = await api.getSubmissions();
+      const recent = submissions
+        .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 10)
+        .map((sub: any) => ({
+          id: sub._id,
+          message: `${sub.studentId?.name || 'A student'} submitted ${sub.jobId?.title || 'a job'} (Score: ${sub.overallScore}%)`,
+          time: new Date(sub.createdAt).toLocaleString(),
+          score: sub.overallScore
+        }));
+      setNotifications(recent);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+    }
+  };
 
   if (!user) return null;
 
@@ -158,10 +187,44 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </button>
           <div className="flex-1" />
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-lg shadow-emerald-500/50" />
-            </button>
+            {(user.role === 'teacher' || user.role === 'superadmin') && (
+              <div className="relative">
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                >
+                  <Bell className="w-5 h-5" />
+                  {notifications.length > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-lg shadow-emerald-500/50" />
+                  )}
+                </button>
+                {showNotifications && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
+                  >
+                    <div className="p-4 border-b border-border">
+                      <h3 className="font-semibold text-foreground">Recent Submissions</h3>
+                    </div>
+                    <div className="max-h-96 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map(notif => (
+                          <div key={notif.id} className="p-4 border-b border-border/50 hover:bg-muted/30 transition-colors">
+                            <p className="text-sm text-foreground">{notif.message}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{notif.time}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-4 text-center text-muted-foreground text-sm">
+                          No recent submissions
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            )}
           </div>
         </header>
 
