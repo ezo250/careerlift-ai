@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Users, Briefcase, FileText, BarChart3, Settings,
-  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell
+  LogOut, Menu, X, ChevronRight, GraduationCap, UserCheck, ClipboardList, Bell, Search
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
@@ -49,6 +49,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   useEffect(() => {
     if (user?.role === 'teacher' || user?.role === 'superadmin') {
@@ -75,6 +78,28 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Failed to load notifications:', error);
       setNotifications([]); // Set empty array on error
+    }
+  };
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    try {
+      const users = await api.getUsers();
+      const filtered = users.filter((u: any) => {
+        const matchesName = u.name.toLowerCase().includes(query.toLowerCase());
+        const matchesEmail = u.email.toLowerCase().includes(query.toLowerCase());
+        if (user?.role === 'superadmin') {
+          return (u.role === 'student' || u.role === 'teacher') && (matchesName || matchesEmail);
+        }
+        return u.role === 'student' && (matchesName || matchesEmail);
+      }).slice(0, 5);
+      setSearchResults(filtered);
+    } catch (error) {
+      console.error('Search failed:', error);
     }
   };
 
@@ -193,7 +218,75 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex-1" />
           <div className="flex items-center gap-3">
             {(user.role === 'teacher' || user.role === 'superadmin') && (
-              <div className="relative">
+              <>
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowSearch(!showSearch)}
+                    className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
+                  {showSearch && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute right-0 mt-2 w-80 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
+                    >
+                      <div className="p-4 border-b border-border">
+                        <input
+                          type="text"
+                          placeholder={user.role === 'superadmin' ? 'Search students or teachers...' : 'Search students...'}
+                          value={searchQuery}
+                          onChange={(e) => handleSearch(e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="max-h-96 overflow-y-auto">
+                        {searchResults.length > 0 ? (
+                          searchResults.map(result => (
+                            <div
+                              key={result._id}
+                              onClick={() => {
+                                if (result.role === 'student') {
+                                  navigate('/dashboard/students');
+                                } else if (result.role === 'teacher') {
+                                  navigate('/dashboard/teachers');
+                                }
+                                setShowSearch(false);
+                                setSearchQuery('');
+                                setSearchResults([]);
+                              }}
+                              className="p-4 border-b border-border/50 hover:bg-muted/30 transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-semibold">
+                                  {result.name.split(' ').map((n: string) => n[0]).join('')}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="text-sm font-medium text-foreground">{result.name}</p>
+                                  <p className="text-xs text-muted-foreground">{result.email}</p>
+                                </div>
+                                <span className="text-xs px-2 py-1 rounded-full bg-kepler-gold/10 text-kepler-gold capitalize">
+                                  {result.role}
+                                </span>
+                              </div>
+                            </div>
+                          ))
+                        ) : searchQuery.length >= 2 ? (
+                          <div className="p-4 text-center text-muted-foreground text-sm">
+                            No results found
+                          </div>
+                        ) : (
+                          <div className="p-4 text-center text-muted-foreground text-sm">
+                            Type to search...
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+                <div className="relative">
                 <button 
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="relative p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
@@ -229,6 +322,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   </motion.div>
                 )}
               </div>
+              </>
             )}
           </div>
         </header>
