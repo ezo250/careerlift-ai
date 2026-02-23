@@ -102,4 +102,17 @@ router.get('/top-candidates', auth, authorize('superadmin', 'teacher'), async (r
   }
 });
 
+// Delete submission (superadmin only)
+router.delete('/:id', auth, authorize('superadmin'), async (req, res) => {
+  try {
+    const submission = await StudentSubmission.findByIdAndDelete(req.params.id);
+    if (!submission) {
+      return res.status(404).json({ error: 'Submission not found' });
+    }
+    res.json({ message: 'Submission deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

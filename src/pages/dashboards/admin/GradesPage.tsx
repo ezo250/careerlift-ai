@@ -14,7 +14,6 @@ export default function GradesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedSub, setSelectedSub] = useState<any>(null);
   const [deleteSubmission, setDeleteSubmission] = useState<any>(null);
-  // use special token for "all" to avoid empty-string SelectItem values
   const ALL_TOKEN = '__all__';
   const [filterSection, setFilterSection] = useState(ALL_TOKEN);
   const [filterJob, setFilterJob] = useState(ALL_TOKEN);
