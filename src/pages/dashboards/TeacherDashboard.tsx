@@ -84,12 +84,8 @@ export default function TeacherDashboard() {
     const jobSectionId = j.sectionId?._id?.toString() || j.sectionId?.toString() || j.sectionId;
     return assignedSectionIds.some(id => id === jobSectionId);
   });
-  const sectionSubmissions = submissions.filter(sub => {
-    const student = students.find(u => u._id === sub.studentId);
-    if (!student) return false;
-    const studentSectionId = student.sectionId?._id?.toString() || student.sectionId?.toString() || student.sectionId;
-    return assignedSectionIds.some(id => id === studentSectionId);
-  });
+  // Server already filters submissions by teacher's sections, so use all submissions
+  const sectionSubmissions = submissions;
 
   const totalSubmissions = sectionSubmissions.length;
   const avgScore = totalSubmissions
@@ -260,7 +256,7 @@ export default function TeacherDashboard() {
           <h3 className="font-display font-semibold text-foreground mb-4">My Students ({sectionStudents.length})</h3>
           <div className={`space-y-3 ${sectionStudents.length > 4 ? 'max-h-[400px] overflow-y-auto pr-2' : ''}`}>
             {sectionStudents.map(student => {
-              const subs = submissions.filter(s => s.studentId === student._id);
+              const subs = sectionSubmissions.filter(s => s.studentId === student._id);
               const bestScore = subs.length ? Math.max(...subs.map(s => s.overallScore)) : 0;
               const section = sections.find(s => s._id === student.sectionId);
               return (
