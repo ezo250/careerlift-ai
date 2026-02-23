@@ -108,8 +108,8 @@ export default function StudentDashboard() {
   const mySection = sections.find(s => s._id === user?.sectionId);
   const mySubmissions = submissions;
   const bestScore = mySubmissions.length ? Math.max(...mySubmissions.map(s => s.overallScore)) : 0;
-  const latestSubmission = mySubmissions.length ? mySubmissions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0] : null;
-  const latestScore = latestSubmission ? latestSubmission.overallScore : 0;
+  const sortedSubmissions = [...mySubmissions].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const latestScore = sortedSubmissions.length > 0 ? sortedSubmissions[0].overallScore : 0;
 
   if (selectedSub) {
     return <SubmissionDetail submission={selectedSub} onBack={() => setSelectedSub(null)} />;
