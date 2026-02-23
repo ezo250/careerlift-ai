@@ -256,7 +256,7 @@ export default function TeacherDashboard() {
           <h3 className="font-display font-semibold text-foreground mb-4">My Students ({sectionStudents.length})</h3>
           <div className={`space-y-3 ${sectionStudents.length > 4 ? 'max-h-[400px] overflow-y-auto pr-2' : ''}`}>
             {sectionStudents.map(student => {
-              const subs = sectionSubmissions.filter(s => s.studentId === student._id);
+              const subs = sectionSubmissions.filter(s => (s.studentId?._id || s.studentId) === student._id);
               const bestScore = subs.length ? Math.max(...subs.map(s => s.overallScore)) : 0;
               const section = sections.find(s => s._id === student.sectionId);
               return (
@@ -308,10 +308,11 @@ export default function TeacherDashboard() {
             </thead>
             <tbody>
               {sectionSubmissions.map(sub => {
-                const job = jobs.find(j => j._id === sub.jobId);
+                const job = jobs.find(j => j._id === (sub.jobId?._id || sub.jobId));
+                const studentName = sub.studentId?.name || sub.studentName || 'Unknown';
                 return (
                   <tr key={sub._id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="py-3 font-medium text-foreground">{sub.studentName}</td>
+                    <td className="py-3 font-medium text-foreground">{studentName}</td>
                     <td className="py-3 text-muted-foreground">{job?.title}</td>
                     <td className="py-3 text-muted-foreground">#{sub.submissionNumber}</td>
                     <td className="py-3">
