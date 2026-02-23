@@ -206,7 +206,7 @@ export default function TeacherDashboard() {
           className="glass-card-elevated p-6"
         >
           <h3 className="font-display font-semibold text-foreground mb-4">My Students ({sectionStudents.length})</h3>
-          <div className="space-y-3">
+          <div className={`space-y-3 ${sectionStudents.length > 4 ? 'max-h-[400px] overflow-y-auto pr-2' : ''}`}>
             {sectionStudents.map(student => {
               const subs = submissions.filter(s => s.studentId === student._id);
               const bestScore = subs.length ? Math.max(...subs.map(s => s.overallScore)) : 0;
@@ -246,9 +246,9 @@ export default function TeacherDashboard() {
         className="glass-card-elevated p-6"
       >
         <h3 className="font-display font-semibold text-foreground mb-4">All Submissions ({sectionSubmissions.length})</h3>
-        <div className="overflow-x-auto">
+        <div className={`overflow-x-auto ${sectionSubmissions.length > 7 ? 'max-h-[600px] overflow-y-auto' : ''}`}>
           <table className="w-full text-sm">
-            <thead>
+            <thead className="sticky top-0 bg-card z-10">
               <tr className="border-b border-border text-left">
                 <th className="pb-3 font-medium text-muted-foreground">Student</th>
                 <th className="pb-3 font-medium text-muted-foreground">Job</th>
