@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Mail, GraduationCap } from 'lucide-react';
+import { Users, Mail, GraduationCap, Edit, Trash2, X } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<any[]>([]);
   const [sections, setSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterSection, setFilterSection] = useState<string>('all');
+  const [editStudent, setEditStudent] = useState<any>(null);
+  const [deleteStudent, setDeleteStudent] = useState<any>(null);
 
   useEffect(() => {
     loadData();
@@ -27,6 +30,33 @@ export default function StudentsPage() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await api.updateUser(editStudent._id, {
+        name: editStudent.name,
+        email: editStudent.email,
+        sectionId: editStudent.sectionId
+      });
+      toast.success('Student updated successfully');
+      setEditStudent(null);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await api.deleteUser(deleteStudent._id);
+      toast.success('Student deleted successfully');
+      setDeleteStudent(null);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
@@ -95,6 +125,7 @@ export default function StudentsPage() {
                 <th className="pb-3 font-medium text-muted-foreground">Email</th>
                 <th className="pb-3 font-medium text-muted-foreground">Section</th>
                 <th className="pb-3 font-medium text-muted-foreground">Joined</th>
+                <th className="pb-3 font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -118,6 +149,22 @@ export default function StudentsPage() {
                     </td>
                     <td className="py-3 text-muted-foreground">
                       {new Date(student.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="py-3">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setEditStudent(student)}
+                          className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteStudent(student)}
+                          className="p-1.5 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -173,6 +220,116 @@ export default function StudentsPage() {
             </motion.div>
           ))}
         </div>
+      )}
+
+      {/* Edit Modal */}
+      {editStudent && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setEditStudent(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-xl p-6 max-w-md w-full border border-border shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-semibold text-foreground">Edit Student</h3>
+              <button onClick={() => setEditStudent(null)} className="p-2 hover:bg-muted rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleEdit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Name</label>
+                <input
+                  type="text"
+                  value={editStudent.name}
+                  onChange={e => setEditStudent({ ...editStudent, name: e.target.value })}
+                  className="kepler-input"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                <input
+                  type="email"
+                  value={editStudent.email}
+                  onChange={e => setEditStudent({ ...editStudent, email: e.target.value })}
+                  className="kepler-input"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Section</label>
+                <Select
+                  value={editStudent.sectionId?._id || editStudent.sectionId}
+                  onValueChange={value => setEditStudent({ ...editStudent, sectionId: value })}
+                >
+                  <SelectTrigger className="h-11 rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {sections.map(s => (
+                      <SelectItem key={s._id} value={s._id}>{s.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-3">
+                <Button type="button" variant="outline" onClick={() => setEditStudent(null)} className="flex-1">
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1 bg-primary text-primary-foreground">
+                  Save Changes
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Delete Modal */}
+      {deleteStudent && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm p-4"
+          onClick={() => setDeleteStudent(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-card rounded-xl p-6 max-w-md w-full border border-destructive shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-semibold text-destructive">Delete Student</h3>
+              <button onClick={() => setDeleteStudent(null)} className="p-2 hover:bg-muted rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="mb-6">
+              <p className="text-foreground mb-2">Are you sure you want to delete this student?</p>
+              <div className="p-4 rounded-lg bg-muted/30 border border-border">
+                <p className="font-semibold text-foreground">{deleteStudent.name}</p>
+                <p className="text-sm text-muted-foreground">{deleteStudent.email}</p>
+              </div>
+              <p className="text-sm text-destructive mt-3">This action cannot be undone.</p>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setDeleteStudent(null)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleDelete} className="flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete Student
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

@@ -145,6 +145,19 @@ class ApiClient {
     return this.request('/users');
   }
 
+  async updateUser(id: string, data: any) {
+    return this.request(`/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteUser(id: string) {
+    return this.request(`/users/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Checklists
   async getChecklists() {
     return this.request('/checklists');
