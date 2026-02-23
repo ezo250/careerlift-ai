@@ -133,8 +133,8 @@ export default function StudentsPage() {
       </motion.div>
 
       {filterSection === 'all' && (
-        <div className="space-y-4">
-          <h3 className="font-display font-semibold text-foreground">Students by Section</h3>
+        <div className="space-y-4 max-h-[800px] overflow-y-auto">
+          <h3 className="font-display font-semibold text-foreground sticky top-0 bg-background py-2 z-10">Students by Section</h3>
           {groupedBySection.map(({ section, students: sectionStudents }) => (
             <motion.div
               key={section._id}
@@ -149,7 +149,7 @@ export default function StudentsPage() {
                   <span className="text-sm text-muted-foreground">({sectionStudents.length} students)</span>
                 </div>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-3 ${sectionStudents.length > 6 ? 'max-h-[400px] overflow-y-auto' : ''}`}>
                 {sectionStudents.map(student => (
                   <div key={student._id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
                     <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-semibold">
