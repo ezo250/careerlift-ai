@@ -17,12 +17,12 @@ interface NavItem {
 
 const adminNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-  { label: 'Sections', icon: GraduationCap, path: '/dashboard/sections' },
+  { label: 'Cohorts', icon: GraduationCap, path: '/dashboard/sections' },
   { label: 'Teachers', icon: UserCheck, path: '/dashboard/teachers' },
   { label: 'Students', icon: Users, path: '/dashboard/students' },
-  { label: 'Job Submissions', icon: Briefcase, path: '/dashboard/jobs' },
+  { label: 'Job Applications', icon: Briefcase, path: '/dashboard/jobs' },
   { label: 'Categories', icon: Tag, path: '/dashboard/categories' },
-  { label: 'Student Grades', icon: BarChart3, path: '/dashboard/grades' },
+  { label: 'Student Score', icon: BarChart3, path: '/dashboard/grades' },
   { label: 'Checklists', icon: ClipboardList, path: '/dashboard/checklists' },
   { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
@@ -38,8 +38,8 @@ const teacherNav: NavItem[] = [
 const studentNav: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
   { label: 'Job Opportunities', icon: Briefcase, path: '/dashboard/jobs' },
-  { label: 'My Submissions', icon: FileText, path: '/dashboard/submissions' },
-  { label: 'My Grades', icon: BarChart3, path: '/dashboard/grades' },
+  { label: 'My Applications', icon: FileText, path: '/dashboard/submissions' },
+  { label: 'My Score', icon: BarChart3, path: '/dashboard/grades' },
   { label: 'Self Evaluation', icon: Sparkles, path: '/dashboard/self-evaluation' },
   { label: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ];
